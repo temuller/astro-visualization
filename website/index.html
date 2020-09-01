@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html>
+<title>astro-visualization: Validation Page</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
+.w3-row-padding img {margin-bottom: 16px}
+/* Set the width of the sidebar to 120px */
+.w3-sidebar {width: 32px;background: #222;}
+/* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
+/* Remove margins from "page content" on small screens */
+@media only screen and (max-width: 600px) {#main {margin-left: 0}}
+</style>
+<body class="w3-white">
+
+<header class="w3-container w3-top w3-black w3-xlarge">
+  <span class="w3-right w3-padding">astro-visualization</span>
+</header>
+
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- Navbar on small screens (Hidden on medium and large screens) -->
+<div class="w3-top">
+<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+<!--div class="w3-bar w3-theme w3-top w3-left-align w3-large"-->
+  <a href="#astro" class="w3-bar-item w3-btn w3-text-white">astro</a>
+  <a href="#gallery" class="w3-bar-item w3-btn w3-text-white">gallery</a>
+</div>
+</div>
+
+
+
+<!-- PAGE CONTENT -->
+<div class="w3-main w3-content" style="max-width:1600px;margin-top:60px">
+<div class="w3-padding-large" style="max-width:1600px;margin-top:60px" id="main">
+
+
+	<header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+	<h1 class="w3-jumbo"> astro-visualization </h1>
+		<p> A repository for pretty astronomical plots </p>
+	</header>
+
+	<div class="w3-content w3-justify w3-text-grey w3-padding-64">
+	<h1> Welcome to our verification page! </h1>
+
+	<p> some text. Our repository <a href="https://github.com/temuller/astro-visualization"> link </a> </p>
+	</div>
+
+
+
+<div class="w3-content w3-justify w3-text-grey w3-padding-64" id="astro">
+  <h2 class="w3-padding-16 w3-text-grey">0 -Astro Visualization</h2>
+  <div class="w3-section">
+
+
+	<p> Some description
+	</p>
+
+<h4> First Example </h4>
+
+  <figure>
+	<td> <a id="./img/example.png"></a> <img src="./img/example.png" style="width:100%"> </td>
+	<figurecaption> <h4> Figure 0.0 :color magnitude relaiton for galaxies on DES Y1 </h4> </figurecaption>
+  </figure>
+
+  </div>
+</div>
+
+<div class="w3-content w3-justify w3-text-grey w3-padding-64" id="gallery">
+  <h2 class="w3-padding-16 w3-text-grey">1 -Gallery</h2>
+  <div class="w3-section">
+
+Take a look in our examples
+
+<div class="w3-content" style="max-width:800px">
+  <img class="mySlides0" src="./img/slide_03.png" style="width:100%">
+  <img class="mySlides0" src="./img/slide_01.png" style="width:100%">
+  <img class="mySlides0" src="./img/slide_02.png" style="width:100%">
+</div>
+
+<br>
+<div class="w3-center">
+Figure
+  <button class="w3-button demo0" onclick="currentDiv0(1)">1</button>
+  <button class="w3-button demo0" onclick="currentDiv0(2)">2</button>
+  <button class="w3-button demo0" onclick="currentDiv0(3)">3</button>
+</div>
+
+<script>
+var slideIndex = 1;
+showDivs0(slideIndex);
+
+function currentDiv0(n) {
+  showDivs0(slideIndex = n);
+}
+
+function showDivs0(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides0");
+  var dots = document.getElementsByClassName("demo0");
+  if (n > x.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" w3-black", "");
+  }
+  x[slideIndex-1].style.display = "block";  
+  dots[slideIndex-1].className += " w3-black";
+}
+</script>
+
+  </div>
+</div>
+
+  <!-- Footer -->
+  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+    <a href="https://github.com/estevesjh/ccopa"> <i class="fa fa-github w3-hover-opacity"></i> </a>
+    <p class="w3-medium">Fermi wiki page <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>
+  <!-- End footer -->
+  </footer>
+</div>
+<!-- END PAGE CONTENT -->
+</div>
+
+</body>
+</html>

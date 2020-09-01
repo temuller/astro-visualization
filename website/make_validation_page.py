@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+"""
+Generating astro-visualization web pag
+"""
+__author__ = "Johnny Esteves"
+
+
+HEADER = """
+	<header class="w3-container w3-padding-32 w3-center w3-black" id="home">
+	<h1 class="w3-jumbo"> astro-visualization </h1>
+		<p> A repository for pretty astronomical plots </p>
+	</header>
+
+	<div class="w3-content w3-justify w3-text-grey w3-padding-64">
+	<h1> Welcome to our verification page! </h1>
+
+	<p> some text. Our repository <a href="https://github.com/temuller/astro-visualization"> link </a> </p>
+	</div>
+"""
+
+DESCRIPTION = """
+	<p> Some description
+	</p>
+"""
+
+import glob
+
+def get_image_path():
+	# resul_fname_list = ['./img/mu_identity_4.png','./img/mu_residual_4_ntrue.png']
+	fname_list0 = glob.glob("../img/stars_*")
+	fname_list0.reverse()
+
+	fname_list1 = glob.glob("../img/galaxies_*.png")
+	fname_list1.reverse()
+
+	fname_list2 = glob.glob("./img/slide_*")
+
+	return [fname_list0,fname_list1,fname_list2]
+
+def main():
+	from makeHTML import sections, build_index_page
+
+	filename = 'index.html'
+	f1, f2, f3 = get_image_path()
+
+	## Creating the first section
+	header = sections('astro',title='Astro Visualization')
+	header.add_to_section(DESCRIPTION)
+	header.add_to_section('<h4> First Example </h4>')
+
+	header.add_figure(["./img/example.png"],caption=['color magnitude relaiton for galaxies on DES Y1'])
+
+	## Creating the gallery section
+	gal = sections('gallery',title='Gallery')
+	gal.add_to_section('Take a look in our examples')
+	gal.add_slide_images(f3)
+
+	## Creating the Third section
+	# thd = sections('third',title='Third Selction')
+
+	build_index_page([header,gal],filename,header=HEADER)
+
+main()
