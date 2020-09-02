@@ -12,14 +12,14 @@ HEADER = """
 	</header>
 
 	<div class="w3-content w3-justify w3-text-grey w3-padding-64">
-	<h1> Welcome to our visualization page! </h1>
+	<h1> Welcome to Astro-Visualization! </h1>
 
-	<p> some text. Our repository <a href="https://github.com/temuller/astro-visualization"> link </a> </p>
+	<p>  In this website you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us!. Our repository <a href="https://github.com/temuller/astro-visualization"> link </a> </p>
 	</div>
 """
 
 DESCRIPTION = """
-	<p> Welcome to Astro-Visualization! In this website you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us!
+	<p> some content.
 	</p>
 """
 
@@ -48,7 +48,7 @@ def main():
 
 	## Creating the first section
 	header = sections('astro',title='Astro Visualization')
-	header.add_to_section(DESCRIPTION)
+	# header.add_to_section(DESCRIPTION)
 	header.add_to_section('<h4> First Example </h4>')
 
 	header.add_figure(["./img/example.png"],caption=['color magnitude relaiton for galaxies on DES Y1'])
