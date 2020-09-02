@@ -54,14 +54,14 @@ class sections:
 	def __init__(self,name,title=None,files=None):
 		self.id = name.lower()
 		self.name = name
-		
+
 		self.k = next(self._ks)
 
 		if title is not None: self.title = title
 		else: self.title = name
 
 		self.section_syntax = self.make_section_header()
-		
+
 	def make_section_header(self):
 		return SECTION%dict(id=self.id,title=self.title)
 
@@ -84,7 +84,7 @@ class sections:
 			caption = ['Figure %i '%(i+1) for i,img in enumerate(files)]
 		else:
 			caption = ['Figure %i :'%(i+1)+ci for i,ci in enumerate(caption)]
-		
+
 		bulk = '\n'.join([FIGURE%dict(fname=img, caption =ci) for img,ci in zip(files,caption) ])
 
 		return self.add_to_section(bulk)
@@ -100,7 +100,7 @@ class sections:
 	def add_grid_figure(self,fname,title,caption,class_type='type1',begin=False,close=False):
 		if begin:
 			self.add_to_section(GRIDGALLERY)
-		
+
 		line = IMG_GRID_GALLERY%dict(image=fname,caption=caption,key=title,class_type=class_type)
 		if close: line = self.close(line)
 		return self.add_to_section(line)
@@ -108,7 +108,7 @@ class sections:
 	def add_html_table(self,dicto,title='',buttom=None):
 		header = """<br> <h4> Table %(title)s </h4>
 		<table class="w3-table-all w3-hoverable">"""%dict(title=title)
-		
+
 		if buttom is not None:
 			ks = next(self._ks2)
 			ac = ACCORDION%dict(k=ks,label=buttom)
@@ -116,7 +116,7 @@ class sections:
 
 		table_lines = ''.join( [TABLE%dict(key=key,val=dicto[key]) for key in dicto] )
 		table_synthax = header +'\n'+table_lines + '\n</table> </br>'
-		
+
 		if buttom:
 			table_synthax += '\n</div>'
 
@@ -128,17 +128,17 @@ class sections:
 		else:
 			myfile = open(infile,'r')
 			code_block_line = CODE_BOX%dict(syntax=myfile.read())
-		
+
 		return self.add_to_section(code_block_line)
 
 	def row_cluster_info(self,table,buttom=None):
 		header = """<table class="w3-table-all w3-hoverable">"""
-		
+
 		if buttom is not None:
 			ks = next(self._ks2)
 			ac = ACCORDION%dict(k=ks,label=buttom)
 			header = ac+header
-		
+
 		header_table = """\n  <thead>\n    <tr class="w3-light-grey">"""+cluster_info
 
 		bulk = cluster_info_row.format(table['CID'],table['RA'],table['DEC'],table['redshift'])
@@ -169,7 +169,7 @@ cluster_info_row="""
       <td>{:.3f}</td>
     </tr>
   </tbody>
-</table>	
+</table>
 """
 columns_type = ['i','.5f','.5f','.3f','.1f']
 
@@ -211,7 +211,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   width: 100%%;
   background: #151515;
   -webkit-user-select: none;
-  -moz-user-select: none;  
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -253,7 +253,7 @@ h1 {
   display: none; /* Hide all elements by default */
 }
 
-/* Clear floats after rows */ 
+/* Clear floats after rows */
 .row:after {
   content: "";
   display: table;
@@ -292,7 +292,7 @@ h1 {
 <body class="w3-white">
 
 <header class="w3-container w3-top w3-black w3-xlarge">
-  <span class="w3-right w3-padding">astro-visualization</span>
+  <span class="w3-right w3-padding">Astro-Visualization</span>
 </header>
 
 %(navigation_bar)s
@@ -330,9 +330,9 @@ CODE_BOX = """
   window.onload = function(){
       var codeElement = document.getElementById('cython_code');
       var code = codeElement.innerText;
-    
+
       codeElement.innerHTML = "";
-    
+
       var codeMirror = CodeMirror(
         codeElement,
         {
@@ -413,7 +413,7 @@ function w3RemoveClass(element, name) {
   arr2 = name.split(" ");
   for (i = 0; i < arr2.length; i++) {
     while (arr1.indexOf(arr2[i]) > -1) {
-      arr1.splice(arr1.indexOf(arr2[i]), 1);     
+      arr1.splice(arr1.indexOf(arr2[i]), 1);
     }
   }
   element.className = arr1.join(" ");
@@ -448,8 +448,8 @@ jQuery(document).ready(function() {
       appendSpan: true
     },
     transitionType:'fade',
-    autoScaleSlider: true, 
-    autoScaleSliderWidth: 960,     
+    autoScaleSlider: true,
+    autoScaleSliderWidth: 960,
     autoScaleSliderHeight: 600,
     loop: true,
     arrowsNav: false,
@@ -493,15 +493,15 @@ function showDivs%(k)s(n) {
   var i;
   var x = document.getElementsByClassName("mySlides%(k)s");
   var dots = document.getElementsByClassName("demo%(k)s");
-  if (n > x.length) {slideIndex = 1}    
+  if (n > x.length) {slideIndex = 1}
   if (n < 1) {slideIndex = x.length}
   for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";  
+    x[i].style.display = "none";
   }
   for (i = 0; i < dots.length; i++) {
     dots[i].className = dots[i].className.replace(" w3-black", "");
   }
-  x[slideIndex-1].style.display = "block";  
+  x[slideIndex-1].style.display = "block";
   dots[slideIndex-1].className += " w3-black";
 }
 </script>
