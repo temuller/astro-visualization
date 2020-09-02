@@ -206,6 +206,15 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+#gallery-2 {
+  width: 100%%;
+  background: #151515;
+  -webkit-user-select: none;
+  -moz-user-select: none;  
+  user-select: none;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -423,6 +432,34 @@ for (var i = 0; i < btns.length; i++) {
 }
 </script>
 """
+
+CLOSE_SLIDER="""</div>
+<script>
+jQuery(document).ready(function() {
+  $('#gallery-2').royalSlider({
+    fullscreen: {
+      enabled: true,
+      nativeFS: true
+    },
+    controlNavigation: 'thumbnails',
+    thumbs: {
+      orientation: 'vertical',
+      paddingBottom: 4,
+      appendSpan: true
+    },
+    transitionType:'fade',
+    autoScaleSlider: true, 
+    autoScaleSliderWidth: 960,     
+    autoScaleSliderHeight: 600,
+    loop: true,
+    arrowsNav: false,
+    keyboardNavEnabled: true
+
+  });
+});
+</script>
+"""
+
 FIGURE = """
   <figure>
 	<td> <a id="%(fname)s"></a> <img src="%(fname)s" style="width:100%%"> </td>

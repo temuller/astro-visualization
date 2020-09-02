@@ -19,7 +19,7 @@ HEADER = """
 """
 
 DESCRIPTION = """
-	<p> Some description
+	<p> Welcome to Astro-Visualization! In this website you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us!
 	</p>
 """
 
@@ -60,14 +60,15 @@ def main():
 	gal.add_grid_figure('./img/slide_01.png','Example A','bla',begin=True)
 	gal.add_grid_figure('./img/slide_02.png','Example B','bla')
 	gal.add_grid_figure('./img/slide_03.png','Example C','bla')
+	#gal.add_grid_figure('./img/slide_03.png','Example D','bla',class_type='type3')
 	gal.add_grid_figure('./img/example.png','Example D','bla',class_type='type2',close=True)
 
-	gal.add_to_section('Take a look in our examples')
-	gal.add_slide_images(f3)
+	# gal.add_to_section('Take a look in our examples')
+	# gal.add_slide_images(f3)
 
 	## Creating the Third section
 	# thd = sections('third',title='Third Selction')
 
-	build_index_page([header,gal],filename,header=HEADER)
+	build_index_page([gal,header],filename,header=HEADER)
 
 main()

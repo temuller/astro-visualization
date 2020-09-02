@@ -19,6 +19,15 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+#gallery-2 {
+  width: 100%;
+  background: #151515;
+  -webkit-user-select: none;
+  -moz-user-select: none;  
+  user-select: none;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -107,8 +116,8 @@ h1 {
 <div class="w3-top">
 <div class="w3-bar w3-theme w3-top w3-left-align w3-large">
 <!--div class="w3-bar w3-theme w3-top w3-left-align w3-large"-->
-  <a href="#astro" class="w3-bar-item w3-btn w3-text-white">astro</a>
   <a href="#gallery" class="w3-bar-item w3-btn w3-text-white">gallery</a>
+  <a href="#astro" class="w3-bar-item w3-btn w3-text-white">astro</a>
 </div>
 </div>
 
@@ -132,12 +141,106 @@ h1 {
 
 
 
+<div class="w3-content w3-justify w3-text-grey w3-padding-64" id="gallery">
+  <h2 class="w3-padding-16 w3-text-grey">Gallery</h2>
+  <div class="w3-section">
+
+<div id="myBtnContainer">
+  <button class="btn active" onclick="filterSelection('all')"> Show all</button>
+  <button class="btn" onclick="filterSelection('type1')"> Type 1</button>
+  <button class="btn" onclick="filterSelection('type2')"> Type 2</button>
+  <button class="btn" onclick="filterSelection('type3')"> Type 3</button>
+</div>
+<!-- Portfolio Gallery Grid -->
+<div class="row">
+
+<div class="column type1">
+    <div class="content">
+      <img src="./img/slide_01.png" alt="Example A" style="width:100%">
+      <h4>Example A</h4>
+      <p>bla</p>
+    </div>
+</div>
+
+<div class="column type1">
+    <div class="content">
+      <img src="./img/slide_02.png" alt="Example B" style="width:100%">
+      <h4>Example B</h4>
+      <p>bla</p>
+    </div>
+</div>
+
+<div class="column type1">
+    <div class="content">
+      <img src="./img/slide_03.png" alt="Example C" style="width:100%">
+      <h4>Example C</h4>
+      <p>bla</p>
+    </div>
+</div>
+
+<div class="column type2">
+    <div class="content">
+      <img src="./img/example.png" alt="Example D" style="width:100%">
+      <h4>Example D</h4>
+      <p>bla</p>
+    </div>
+</div>
+</div>
+<script>
+filterSelection("all")
+function filterSelection(c) {
+  var x, i;
+  x = document.getElementsByClassName("column");
+  if (c == "all") c = "";
+  for (i = 0; i < x.length; i++) {
+    w3RemoveClass(x[i], "show");
+    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+  }
+}
+
+function w3AddClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+  }
+}
+
+function w3RemoveClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    while (arr1.indexOf(arr2[i]) > -1) {
+      arr1.splice(arr1.indexOf(arr2[i]), 1);     
+    }
+  }
+  element.className = arr1.join(" ");
+}
+
+
+// Add active class to the current button (highlight it)
+var btnContainer = document.getElementById("myBtnContainer");
+var btns = btnContainer.getElementsByClassName("btn");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function(){
+    var current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+  });
+}
+</script>
+
+  </div>
+</div>
+
 <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="astro">
   <h2 class="w3-padding-16 w3-text-grey">Astro Visualization</h2>
   <div class="w3-section">
 
 
-	<p> Some description
+	<p> Welcome to Astro-Visualization! In this website you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us!
 	</p>
 
 <h4> First Example </h4>
@@ -274,141 +377,6 @@ h1 {
         }
       );
   };
-</script>
-
-  </div>
-</div>
-
-<div class="w3-content w3-justify w3-text-grey w3-padding-64" id="gallery">
-  <h2 class="w3-padding-16 w3-text-grey">Gallery</h2>
-  <div class="w3-section">
-
-<div id="myBtnContainer">
-  <button class="btn active" onclick="filterSelection('all')"> Show all</button>
-  <button class="btn" onclick="filterSelection('type1')"> Type 1</button>
-  <button class="btn" onclick="filterSelection('type2')"> Type 2</button>
-  <button class="btn" onclick="filterSelection('type3')"> Type 3</button>
-</div>
-<!-- Portfolio Gallery Grid -->
-<div class="row">
-
-<div class="column type1">
-    <div class="content">
-      <img src="./img/slide_01.png" alt="Example A" style="width:100%">
-      <h4>Example A</h4>
-      <p>bla</p>
-    </div>
-</div>
-
-<div class="column type1">
-    <div class="content">
-      <img src="./img/slide_02.png" alt="Example B" style="width:100%">
-      <h4>Example B</h4>
-      <p>bla</p>
-    </div>
-</div>
-
-<div class="column type1">
-    <div class="content">
-      <img src="./img/slide_03.png" alt="Example C" style="width:100%">
-      <h4>Example C</h4>
-      <p>bla</p>
-    </div>
-</div>
-
-<div class="column type2">
-    <div class="content">
-      <img src="./img/example.png" alt="Example D" style="width:100%">
-      <h4>Example D</h4>
-      <p>bla</p>
-    </div>
-</div>
-</div>
-<script>
-filterSelection("all")
-function filterSelection(c) {
-  var x, i;
-  x = document.getElementsByClassName("column");
-  if (c == "all") c = "";
-  for (i = 0; i < x.length; i++) {
-    w3RemoveClass(x[i], "show");
-    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
-  }
-}
-
-function w3AddClass(element, name) {
-  var i, arr1, arr2;
-  arr1 = element.className.split(" ");
-  arr2 = name.split(" ");
-  for (i = 0; i < arr2.length; i++) {
-    if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
-  }
-}
-
-function w3RemoveClass(element, name) {
-  var i, arr1, arr2;
-  arr1 = element.className.split(" ");
-  arr2 = name.split(" ");
-  for (i = 0; i < arr2.length; i++) {
-    while (arr1.indexOf(arr2[i]) > -1) {
-      arr1.splice(arr1.indexOf(arr2[i]), 1);     
-    }
-  }
-  element.className = arr1.join(" ");
-}
-
-
-// Add active class to the current button (highlight it)
-var btnContainer = document.getElementById("myBtnContainer");
-var btns = btnContainer.getElementsByClassName("btn");
-for (var i = 0; i < btns.length; i++) {
-  btns[i].addEventListener("click", function(){
-    var current = document.getElementsByClassName("active");
-    current[0].className = current[0].className.replace(" active", "");
-    this.className += " active";
-  });
-}
-</script>
-
-Take a look in our examples
-
-<div class="w3-content" style="max-width:800px">
-  <img class="mySlides0" src="./img/slide_03.png" style="width:100%">
-  <img class="mySlides0" src="./img/slide_01.png" style="width:100%">
-  <img class="mySlides0" src="./img/slide_02.png" style="width:100%">
-</div>
-
-<br>
-<div class="w3-center">
-Figure
-  <button class="w3-button demo0" onclick="currentDiv0(1)">1</button>
-  <button class="w3-button demo0" onclick="currentDiv0(2)">2</button>
-  <button class="w3-button demo0" onclick="currentDiv0(3)">3</button>
-</div>
-
-<script>
-var slideIndex = 1;
-showDivs0(slideIndex);
-
-function currentDiv0(n) {
-  showDivs0(slideIndex = n);
-}
-
-function showDivs0(n) {
-  var i;
-  var x = document.getElementsByClassName("mySlides0");
-  var dots = document.getElementsByClassName("demo0");
-  if (n > x.length) {slideIndex = 1}    
-  if (n < 1) {slideIndex = x.length}
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";  
-  }
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" w3-black", "");
-  }
-  x[slideIndex-1].style.display = "block";  
-  dots[slideIndex-1].className += " w3-black";
-}
 </script>
 
   </div>
