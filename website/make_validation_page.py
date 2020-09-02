@@ -12,7 +12,7 @@ HEADER = """
 	</header>
 
 	<div class="w3-content w3-justify w3-text-grey w3-padding-64">
-	<h1> Welcome to our verification page! </h1>
+	<h1> Welcome to our visualization page! </h1>
 
 	<p> some text. Our repository <a href="https://github.com/temuller/astro-visualization"> link </a> </p>
 	</div>
@@ -23,6 +23,9 @@ DESCRIPTION = """
 	</p>
 """
 
+test_code = """var message = "hello world!";
+alert(message);
+"""
 import glob
 
 def get_image_path():
@@ -49,9 +52,16 @@ def main():
 	header.add_to_section('<h4> First Example </h4>')
 
 	header.add_figure(["./img/example.png"],caption=['color magnitude relaiton for galaxies on DES Y1'])
+	header.add_to_section('<p> The syntax for this plot is given by:')
+	header.add_code_block('',infile='./img/example.py')
 
 	## Creating the gallery section
 	gal = sections('gallery',title='Gallery')
+	gal.add_grid_figure('./img/slide_01.png','Example A','bla',begin=True)
+	gal.add_grid_figure('./img/slide_02.png','Example B','bla')
+	gal.add_grid_figure('./img/slide_03.png','Example C','bla')
+	gal.add_grid_figure('./img/example.png','Example D','bla',class_type='type2',close=True)
+
 	gal.add_to_section('Take a look in our examples')
 	gal.add_slide_images(f3)
 

@@ -7,7 +7,11 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+<script src="http://codemirror.net/lib/codemirror.js"></script>
+<script src="http://codemirror.net/mode/python/python.js"></script>
 <style>
+
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-row-padding img {margin-bottom: 16px}
 /* Set the width of the sidebar to 120px */
@@ -15,6 +19,79 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f1f1f1;
+  padding: 20px;
+  font-family: Arial;
+}
+
+/* Center website */
+.main {
+  max-width: 1000px;
+  margin: auto;
+}
+
+h1 {
+  font-size: 50px;
+  word-break: break-all;
+}
+
+.row {
+  margin: 10px -16px;
+}
+
+/* Add padding BETWEEN each column */
+.row,
+.row > .column {
+  padding: 8px;
+}
+
+/* Create three equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 33.33%;
+  display: none; /* Hide all elements by default */
+}
+
+/* Clear floats after rows */ 
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Content */
+.content {
+  background-color: white;
+  padding: 10px;
+}
+
+/* The "show" class is added to the filtered elements */
+.show {
+  display: block;
+}
+
+/* Style the buttons */
+.btn {
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #ddd;
+}
+
+.btn.active {
+  background-color: #666;
+  color: white;
+}
 </style>
 <body class="w3-white">
 
@@ -48,7 +125,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 	</header>
 
 	<div class="w3-content w3-justify w3-text-grey w3-padding-64">
-	<h1> Welcome to our verification page! </h1>
+	<h1> Welcome to our visualization page! </h1>
 
 	<p> some text. Our repository <a href="https://github.com/temuller/astro-visualization"> link </a> </p>
 	</div>
@@ -56,7 +133,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
 
 <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="astro">
-  <h2 class="w3-padding-16 w3-text-grey">0 -Astro Visualization</h2>
+  <h2 class="w3-padding-16 w3-text-grey">Astro Visualization</h2>
   <div class="w3-section">
 
 
@@ -67,15 +144,231 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
   <figure>
 	<td> <a id="./img/example.png"></a> <img src="./img/example.png" style="width:100%"> </td>
-	<figurecaption> <h4> Figure 0.0 :color magnitude relaiton for galaxies on DES Y1 </h4> </figurecaption>
+	<figurecaption> <h4> Figure 1 :color magnitude relaiton for galaxies on DES Y1 </h4> </figurecaption>
   </figure>
+
+<p> The syntax for this plot is given by:
+
+  <div class="w3-border">
+    <div class="w3-container w3-margin w3-light-grey">
+      <pre><code id="cython_code">def RS_plot_fit(color,mag,mur,paramRS,prob_weights=None,color_weights=None,maglim=25,labely=r'$g-r$',labelx=r'$r$',Name="RM",zcls=0.1,savedir='../graphs/RS/'):
+    
+    ## Set up the figure
+    nullfmt = NullFormatter()         # no labels
+
+    # definitions for the axes
+    left, width = 0.1, 0.65
+    bottom, height = 0.1, 0.65
+    bottom_h = left_h = left + width + 0.02
+
+    rect_scatter = [left, bottom, width, height]
+    rect_histx = [left, bottom_h, width, 0.12]
+    rect_histy = [left_h, bottom, 0.2, height]
+
+    # start with a rectangular Figure
+    plt.clf()
+    plt.figure(figsize=(16, 14))
+
+    axHistx = plt.axes(rect_histx)
+    axHisty = plt.axes(rect_histy)
+    axScatter = plt.axes(rect_scatter)
+
+    # no labels
+    axHistx.xaxis.set_major_formatter(nullfmt)
+    axHisty.yaxis.set_major_formatter(nullfmt)
+
+    ylmin,ylmax = (mur-0.9), (mur+0.6)
+    
+    xmin = np.where(mag.min()<17,15.5,16.5)
+    xlmin,xlmax = (maglim-5.,maglim+1.)
+    # xlmin,xlmax = (mag.mean()-2*mag.std()-1.5),(24.)
+
+    blue, red = '#024794','#AF2B2F'
+
+    ## get the RS vector
+    slope, intercept,sigr = paramRS
+    mag_vec = np.arange(xlmin,xlmax+0.01,0.01)
+    RS = slope*mag_vec+intercept
+
+    
+    # ------> Do the scatter plot
+    c = (color_weights == None)&(color_weights < -1)&(color_weights > 1)
+    color_weights[c] = 0.05
+    
+    top = cm.get_cmap('RdBu_r', 128)
+    midle = cm.get_cmap('gray')
+    bottom = cm.get_cmap('RdBu', 128)
+    newcolors = np.vstack((top(np.linspace(0., 0.45, 128)),midle(np.linspace(0.2,0.3,8)),midle(np.linspace(0.3,0.2,8)),
+                        bottom(np.linspace(0.45, 0., 128))))
+    mycmp = ListedColormap(newcolors, name='RdGrBu')
+    
+    # rdmp = ListedColormap(top(np.linspace(0.5, 1., 128)),name='Rd')
+    # mycmap = ListedColormap(sns.color_palette("RdBu_r", 7).as_hex())
+    
+    axScatter.plot(mag_vec,RS,color=red,linestyle='--',label='Best Fit RS')
+    axScatter.axvline(maglim,linestyle='--',linewidth=2.,color=blue,label='$mag_{lim} = %.1f$'%(maglim))
+    axScatter.scatter(mag, color,c=color_weights,s=120*(prob_weights)**(2)+0.01,alpha=0.7,cmap=mycmp,label=r'$P_{mem}$')
+    axScatter.set_xlabel(labelx)
+    axScatter.set_ylabel(labely)
+    axScatter.set_xlim((xlmin,xlmax))
+    axScatter.set_ylim((ylmin,ylmax)) 
+    
+    #make a legend:
+    legendSizes = [0.1,0.5, 1.0]
+    for lS in legendSizes:
+        plt.scatter([], [],s=100*(lS)**(2)+0.01,c='gray',alpha=0.6,label='$ %.1f$'%(lS))
+    axScatter.legend()
+    axScatter.plot(mag_vec,RS+2*sigr*np.ones_like(mag_vec),color='k',linestyle='--')
+    axScatter.plot(mag_vec,RS-2*sigr*np.ones_like(mag_vec),color='k',linestyle='--')
+    # h, l = plt.gca().get_legend_handles_labels()
+    # plt.legend(h[0:], l[0:], borderpad=1,frameon=True, framealpha=0.3, edgecolor="k", facecolor="w")
+    
+    # ------> Do the vertical histogram
+    yvec = np.linspace(ylmin,ylmax,1000)
+    ybins = np.arange(ylmin, ylmax + 0.075, 0.075)
+    width=np.diff(ybins)
+    
+    axHisty.hist(color, bins=ybins,weights=prob_weights,
+                edgecolor='white',linewidth=1.2,align='mid',color='gray',
+                orientation='horizontal',alpha=1.0,histtype='bar',label=r'$P_{mem} \times N_{gal}$')
+    
+    axHisty.legend()
+    
+    # ------> Do the horizontal histogrammag.max()
+    binwidth = 0.15
+    xbins = np.arange(xlmin,xlmax + 0.5, 0.5)
+    axHistx.hist(mag, bins=xbins,weights=prob_weights, edgecolor='white',linewidth=1.2,align='mid',color=blue,alpha=0.8,histtype='bar')
+    axHistx.set_title(Name+' at z=%.3f'%(zcls))
+    axHistx.legend()
+    axHistx.set_xlim(axScatter.get_xlim())
+    axHisty.set_ylim(axScatter.get_ylim())
+
+    # h, l = plt.gca().get_legend_handles_labels()
+    # # axScatter.legend(h[1:], l[1:], loc=0, labelspacing=0.5,frameon=True, framealpha=0.3, edgecolor="gray", facecolor="lightgray")
+    # plt.legend(h[1:], l[1:], labelspacing=0.5,loc='upper left', borderpad=1,title=r'$P_{mem}$',bbox_to_anchor=(0.2,0.30,1.,1.),frameon=True, framealpha=0.3, edgecolor="gray")
+
+    ## Save 
+    save=labely.split('$')[1]
+    out_name = savedir+str(Name)+'_RS_Fit_%s.png'%(save)
+    plt.savefig(out_name)
+    # plt.show()
+    plt.clf()
+
+    </div>
+  </div>
+<script type="text/javascript">
+  window.onload = function(){
+      var codeElement = document.getElementById('cython_code');
+      var code = codeElement.innerText;
+    
+      codeElement.innerHTML = "";
+    
+      var codeMirror = CodeMirror(
+        codeElement,
+        {
+          value: code,
+          mode: "python",
+          theme: "default",
+          lineNumbers: true,
+          readOnly: true
+        }
+      );
+  };
+</script>
 
   </div>
 </div>
 
 <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="gallery">
-  <h2 class="w3-padding-16 w3-text-grey">1 -Gallery</h2>
+  <h2 class="w3-padding-16 w3-text-grey">Gallery</h2>
   <div class="w3-section">
+
+<div id="myBtnContainer">
+  <button class="btn active" onclick="filterSelection('all')"> Show all</button>
+  <button class="btn" onclick="filterSelection('type1')"> Type 1</button>
+  <button class="btn" onclick="filterSelection('type2')"> Type 2</button>
+  <button class="btn" onclick="filterSelection('type3')"> Type 3</button>
+</div>
+<!-- Portfolio Gallery Grid -->
+<div class="row">
+
+<div class="column type1">
+    <div class="content">
+      <img src="./img/slide_01.png" alt="Example A" style="width:100%">
+      <h4>Example A</h4>
+      <p>bla</p>
+    </div>
+</div>
+
+<div class="column type1">
+    <div class="content">
+      <img src="./img/slide_02.png" alt="Example B" style="width:100%">
+      <h4>Example B</h4>
+      <p>bla</p>
+    </div>
+</div>
+
+<div class="column type1">
+    <div class="content">
+      <img src="./img/slide_03.png" alt="Example C" style="width:100%">
+      <h4>Example C</h4>
+      <p>bla</p>
+    </div>
+</div>
+
+<div class="column type2">
+    <div class="content">
+      <img src="./img/example.png" alt="Example D" style="width:100%">
+      <h4>Example D</h4>
+      <p>bla</p>
+    </div>
+</div>
+</div>
+<script>
+filterSelection("all")
+function filterSelection(c) {
+  var x, i;
+  x = document.getElementsByClassName("column");
+  if (c == "all") c = "";
+  for (i = 0; i < x.length; i++) {
+    w3RemoveClass(x[i], "show");
+    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+  }
+}
+
+function w3AddClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+  }
+}
+
+function w3RemoveClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    while (arr1.indexOf(arr2[i]) > -1) {
+      arr1.splice(arr1.indexOf(arr2[i]), 1);     
+    }
+  }
+  element.className = arr1.join(" ");
+}
+
+
+// Add active class to the current button (highlight it)
+var btnContainer = document.getElementById("myBtnContainer");
+var btns = btnContainer.getElementsByClassName("btn");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function(){
+    var current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+  });
+}
+</script>
 
 Take a look in our examples
 

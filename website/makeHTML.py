@@ -57,8 +57,8 @@ class sections:
 		
 		self.k = next(self._ks)
 
-		if title is not None: self.title = '%i -'%(self.k) + title
-		else: self.title = '%i -'%(self.k) + name
+		if title is not None: self.title = title
+		else: self.title = name
 
 		self.section_syntax = self.make_section_header()
 		
@@ -69,6 +69,9 @@ class sections:
 		self.section_syntax += '\n'+string
 		return self.section_syntax
 
+	def close(self,syntax):
+		return syntax+CLOSE_GRID_GALLERY
+
 	def close_section(self):
 		self.section_syntax += '\n  </div>\n</div>'
 
@@ -78,9 +81,9 @@ class sections:
 
 	def add_figure(self,files,caption=None):
 		if caption is None:
-			caption = ['Figure %i.%i '%(self.k,i) for i,img in enumerate(files)]
+			caption = ['Figure %i '%(i+1) for i,img in enumerate(files)]
 		else:
-			caption = ['Figure %i.%i :'%(self.k,i)+ci for i,ci in enumerate(caption)]
+			caption = ['Figure %i :'%(i+1)+ci for i,ci in enumerate(caption)]
 		
 		bulk = '\n'.join([FIGURE%dict(fname=img, caption =ci) for img,ci in zip(files,caption) ])
 
@@ -93,7 +96,15 @@ class sections:
 		img_slide_synthax = IMAGE_GRID % dict(block=block, block2=block2, k=ks)
 
 		return self.add_to_section(img_slide_synthax)
-	
+
+	def add_grid_figure(self,fname,title,caption,class_type='type1',begin=False,close=False):
+		if begin:
+			self.add_to_section(GRIDGALLERY)
+		
+		line = IMG_GRID_GALLERY%dict(image=fname,caption=caption,key=title,class_type=class_type)
+		if close: line = self.close(line)
+		return self.add_to_section(line)
+
 	def add_html_table(self,dicto,title='',buttom=None):
 		header = """<br> <h4> Table %(title)s </h4>
 		<table class="w3-table-all w3-hoverable">"""%dict(title=title)
@@ -110,6 +121,15 @@ class sections:
 			table_synthax += '\n</div>'
 
 		return self.add_to_section(table_synthax)
+
+	def add_code_block(self,text,infile=None):
+		if infile is None:
+			code_block_line = CODE_BOX%dict(syntax=text)
+		else:
+			myfile = open(infile,'r')
+			code_block_line = CODE_BOX%dict(syntax=myfile.read())
+		
+		return self.add_to_section(code_block_line)
 
 	def row_cluster_info(self,table,buttom=None):
 		header = """<table class="w3-table-all w3-hoverable">"""
@@ -174,7 +194,11 @@ INDEX = """
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+<script src="http://codemirror.net/lib/codemirror.js"></script>
+<script src="http://codemirror.net/mode/python/python.js"></script>
 <style>
+
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 .w3-row-padding img {margin-bottom: 16px}
 /* Set the width of the sidebar to 120px */
@@ -182,6 +206,79 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
 /* Remove margins from "page content" on small screens */
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f1f1f1;
+  padding: 20px;
+  font-family: Arial;
+}
+
+/* Center website */
+.main {
+  max-width: 1000px;
+  margin: auto;
+}
+
+h1 {
+  font-size: 50px;
+  word-break: break-all;
+}
+
+.row {
+  margin: 10px -16px;
+}
+
+/* Add padding BETWEEN each column */
+.row,
+.row > .column {
+  padding: 8px;
+}
+
+/* Create three equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 33.33%%;
+  display: none; /* Hide all elements by default */
+}
+
+/* Clear floats after rows */ 
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Content */
+.content {
+  background-color: white;
+  padding: 10px;
+}
+
+/* The "show" class is added to the filtered elements */
+.show {
+  display: block;
+}
+
+/* Style the buttons */
+.btn {
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #ddd;
+}
+
+.btn.active {
+  background-color: #666;
+  color: white;
+}
 </style>
 <body class="w3-white">
 
@@ -214,6 +311,33 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 </html>
 """
 
+CODE_BOX = """
+  <div class="w3-border">
+    <div class="w3-container w3-margin w3-light-grey">
+      <pre><code id="cython_code">%(syntax)s
+    </div>
+  </div>
+<script type="text/javascript">
+  window.onload = function(){
+      var codeElement = document.getElementById('cython_code');
+      var code = codeElement.innerText;
+    
+      codeElement.innerHTML = "";
+    
+      var codeMirror = CodeMirror(
+        codeElement,
+        {
+          value: code,
+          mode: "python",
+          theme: "default",
+          lineNumbers: true,
+          readOnly: true
+        }
+      );
+  };
+</script>
+"""
+
 SECTION = """
 <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="%(id)s">
   <h2 class="w3-padding-16 w3-text-grey">%(title)s</h2>
@@ -233,6 +357,72 @@ NAVBAR = """
 </div>
 """
 
+GRIDGALLERY = """<div id="myBtnContainer">
+  <button class="btn active" onclick="filterSelection('all')"> Show all</button>
+  <button class="btn" onclick="filterSelection('type1')"> Type 1</button>
+  <button class="btn" onclick="filterSelection('type2')"> Type 2</button>
+  <button class="btn" onclick="filterSelection('type3')"> Type 3</button>
+</div>
+<!-- Portfolio Gallery Grid -->
+<div class="row">
+"""
+
+IMG_GRID_GALLERY="""<div class="column %(class_type)s">
+    <div class="content">
+      <img src="%(image)s" alt="%(key)s" style="width:100%%">
+      <h4>%(key)s</h4>
+      <p>%(caption)s</p>
+    </div>
+</div>
+"""
+
+CLOSE_GRID_GALLERY="""</div>
+<script>
+filterSelection("all")
+function filterSelection(c) {
+  var x, i;
+  x = document.getElementsByClassName("column");
+  if (c == "all") c = "";
+  for (i = 0; i < x.length; i++) {
+    w3RemoveClass(x[i], "show");
+    if (x[i].className.indexOf(c) > -1) w3AddClass(x[i], "show");
+  }
+}
+
+function w3AddClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    if (arr1.indexOf(arr2[i]) == -1) {element.className += " " + arr2[i];}
+  }
+}
+
+function w3RemoveClass(element, name) {
+  var i, arr1, arr2;
+  arr1 = element.className.split(" ");
+  arr2 = name.split(" ");
+  for (i = 0; i < arr2.length; i++) {
+    while (arr1.indexOf(arr2[i]) > -1) {
+      arr1.splice(arr1.indexOf(arr2[i]), 1);     
+    }
+  }
+  element.className = arr1.join(" ");
+}
+
+
+// Add active class to the current button (highlight it)
+var btnContainer = document.getElementById("myBtnContainer");
+var btns = btnContainer.getElementsByClassName("btn");
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener("click", function(){
+    var current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+  });
+}
+</script>
+"""
 FIGURE = """
   <figure>
 	<td> <a id="%(fname)s"></a> <img src="%(fname)s" style="width:100%%"> </td>
