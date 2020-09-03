@@ -24,7 +24,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   width: 100%;
   background: #151515;
   -webkit-user-select: none;
-  -moz-user-select: none;  
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -66,7 +66,7 @@ h1 {
   display: none; /* Hide all elements by default */
 }
 
-/* Clear floats after rows */ 
+/* Clear floats after rows */
 .row:after {
   content: "";
   display: table;
@@ -121,7 +121,7 @@ h1 {
 <body class="w3-white">
 
 <header class="w3-container w3-top w3-black w3-xlarge">
-  <span class="w3-right w3-padding">astro-visualization</span>
+  <span class="w3-right w3-padding">Astro-Visualization</span>
 </header>
 
 
@@ -145,14 +145,20 @@ h1 {
 
 
 	<header class="w3-container w3-padding-32 w3-center w3-black" id="home">
-	<h1 class="w3-jumbo"> astro-visualization </h1>
-		<p> A repository for pretty astronomical plots </p>
+	<h1 class="w3-jumbo"> Astro-Visualization </h1>
+		<h4> A repository for pretty astronomical plots </h4>
 	</header>
 
 	<div class="w3-content w3-justify w3-text-grey w3-padding-64">
+<<<<<<< HEAD
 	<h1> Welcome to Astro-Visualization! </h1>
 
 	<p>  In this website you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us!. Our repository <a href="https://github.com/temuller/astro-visualization"> link </a> </p>
+=======
+	<h3> Welcome to Astro-Visualization! In this website you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us! </h3>
+
+	<p> This website is hosted in a <a href="https://github.com/temuller/astro-visualization"> Github repository</a>. </p>
+>>>>>>> 0e0c4d85cd44e0705f7b8e977c86a78c54d6ad97
 	</div>
 
 
@@ -200,7 +206,7 @@ h1 {
     </div>
 </div>
 
-<div class="column type2">
+<div class="column Galaxy">
     <div class="content">
     <div class="w3-ul w3-border w3-hover-shadow w3-light-grey">
       <img src="./img/example.png" alt="Example D" style="width:100%">
@@ -237,7 +243,7 @@ function w3RemoveClass(element, name) {
   arr2 = name.split(" ");
   for (i = 0; i < arr2.length; i++) {
     while (arr1.indexOf(arr2[i]) > -1) {
-      arr1.splice(arr1.indexOf(arr2[i]), 1);     
+      arr1.splice(arr1.indexOf(arr2[i]), 1);
     }
   }
   element.className = arr1.join(" ");
@@ -263,6 +269,13 @@ for (var i = 0; i < btns.length; i++) {
   <h2 class="w3-padding-16 w3-text-grey">Astro Visualization</h2>
   <div class="w3-section">
 
+<<<<<<< HEAD
+=======
+
+	<p>
+	</p>
+
+>>>>>>> 0e0c4d85cd44e0705f7b8e977c86a78c54d6ad97
 <h4> First Example </h4>
 
   <figure>
@@ -383,9 +396,9 @@ for (var i = 0; i < btns.length; i++) {
   window.onload = function(){
       var codeElement = document.getElementById('cython_code');
       var code = codeElement.innerText;
-    
+
       codeElement.innerHTML = "";
-    
+
       var codeMirror = CodeMirror(
         codeElement,
         {

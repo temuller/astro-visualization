@@ -1,25 +1,35 @@
 #!/usr/bin/env python
 """
-Generating astro-visualization web pag
+Generating astro-visualization web page
 """
 __author__ = "Johnny Esteves"
 
 
 HEADER = """
 	<header class="w3-container w3-padding-32 w3-center w3-black" id="home">
-	<h1 class="w3-jumbo"> astro-visualization </h1>
-		<p> A repository for pretty astronomical plots </p>
+	<h1 class="w3-jumbo"> Astro-Visualization </h1>
+		<h4> A repository for pretty astronomical plots </h4>
 	</header>
 
 	<div class="w3-content w3-justify w3-text-grey w3-padding-64">
+<<<<<<< HEAD
 	<h1> Welcome to Astro-Visualization! </h1>
 
 	<p>  In this website you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us!. Our repository <a href="https://github.com/temuller/astro-visualization"> link </a> </p>
+=======
+	<h3> Welcome to Astro-Visualization! In this website you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us! </h3>
+
+	<p> This website is hosted in a <a href="https://github.com/temuller/astro-visualization"> Github repository</a>. </p>
+>>>>>>> 0e0c4d85cd44e0705f7b8e977c86a78c54d6ad97
 	</div>
 """
 
 DESCRIPTION = """
+<<<<<<< HEAD
 	<p> some content.
+=======
+	<p>
+>>>>>>> 0e0c4d85cd44e0705f7b8e977c86a78c54d6ad97
 	</p>
 """
 
@@ -61,7 +71,7 @@ def main():
 	gal.add_grid_figure('./img/slide_02.png','Example B','bla')
 	gal.add_grid_figure('./img/slide_03.png','Example C','bla')
 	#gal.add_grid_figure('./img/slide_03.png','Example D','bla',class_type='type3')
-	gal.add_grid_figure('./img/example.png','Example D','bla',class_type='type2',close=True)
+	gal.add_grid_figure('./img/example.png','Example D','bla',class_type='Galaxy',close=True)
 
 	# gal.add_to_section('Take a look in our examples')
 	# gal.add_slide_images(f3)
