@@ -262,7 +262,7 @@ h1 {
 
 /* Content */
 .content {
-  background-color: white;
+  background-color: light-grey;
   padding: 10px;
 }
 
@@ -288,6 +288,22 @@ h1 {
   background-color: #666;
   color: white;
 }
+.btn {
+  background-color: #ddd;
+  border: none;
+  color: black;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 16px;
+  margin: 6px 4px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background-color: #3e8e41;
+  color: white;
+}
+
 </style>
 <body class="w3-white">
 
@@ -378,9 +394,11 @@ GRIDGALLERY = """<div id="myBtnContainer">
 
 IMG_GRID_GALLERY="""<div class="column %(class_type)s">
     <div class="content">
+    <div class="w3-ul w3-border w3-hover-shadow w3-light-grey">
       <img src="%(image)s" alt="%(key)s" style="width:100%%">
       <h4>%(key)s</h4>
       <p>%(caption)s</p>
+    </div>
     </div>
 </div>
 """
