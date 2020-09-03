@@ -10,12 +10,12 @@ Do you have a pretty plot you would like to share with the rest of the astronomy
    * Your name (ideally as it appears on your publications). Affiliation is optional.
    * An image of your plot (use the most common formats (e.g., png, jpg, pdf, etc).
    * The link to the original plot, if any (e.g., publication, website, etc.)
-   * The caption of the plot.
+   * The caption of the plot in Latex format, if any.
    * The source code. We don't require the data, but try to re-write the code to be as generic as possible so others can easilly understand how it works. Don't forget to include comments as a guide.
-   * Create a `metada.txt` file with points 1 and 3. Compress all the files (metadata, image and source code) in a single file (zip, tar, etc.).
+   * Create a `metada.txt` file with points 1, 3 and 4. Compress all the files (metadata, image and source code) in a single file (zip, tar, etc.).
    * Send it to [us](#contributors)!
 
-In `path/to/somewhere` we have an example (`example_contribution.zip`) of this.
+In `path/to/somewhere` we have an example (`contribution_example.zip`) of this.
 
 ___
 ## Contributors
