@@ -23,6 +23,22 @@ DESCRIPTION = """
 	</p>
 """
 
+CONTRIBUTING = """
+	<p> Do you have a pretty plot you would like to share with the rest of the astronomy community? Wonderful! We require the following: </p>
+
+	<ul>
+  	<li>Your name (ideally as it appears on your publications). Affiliation is optional.</li>
+  	<li>An image of your plot (use the most common formats (e.g., png, jpg, pdf, etc).</li>
+  	<li>The link to the original plot, if any (e.g., publication, website, etc.)</li>
+	<li>The caption of the plot.</li>
+	<li>The source code. We don't require the data, but try to re-write the code to be as generic as possible so others can easilly understand how it works. Don't forget to include comments as a guide.</li>
+	<li>Create a `metada.txt` file with points 1 and 3. Compress all the files (metadata, image and source code) in a single file (zip, tar, etc.).</li>
+	<li>Send it to <a href="https://github.com/temuller/astro-visualization/tree/test_branch#contributors">us</a>!</li>
+	</ul>
+
+	<p> You can find an example in our <a href="https://github.com/temuller/astro-visualization/tree/master">Github repository</a>.</p>
+"""
+
 test_code = """var message = "hello world!";
 alert(message);
 """
@@ -67,8 +83,9 @@ def main():
 	# gal.add_slide_images(f3)
 
 	## Creating the Third section
-	# thd = sections('third',title='Third Selction')
+	cont = sections('contributing',title='Contributing')
+	cont.add_to_section(CONTRIBUTING)
 
-	build_index_page([gal,header],filename,header=HEADER)
+	build_index_page([gal,header, cont],filename,header=HEADER)
 
 main()
