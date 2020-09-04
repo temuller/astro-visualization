@@ -3,6 +3,8 @@ on:
   push:
     branches:
     - master
+  pull_request:
+    - master
 jobs:
   deploy:
     runs-on: ubuntu-18.04
