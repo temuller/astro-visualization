@@ -14,10 +14,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup hugo
-        uses: temuller/actions-hugo@v2
+        uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: "0.74.1"
-          extended: true
+          extended: false
 
       - name: Clean docs directory
         run: rm -rf docs
@@ -28,10 +28,10 @@ jobs:
         run: hugo -d docs
 
       - name: Deploy
-        uses: temuller/actions-checkpoint@v3
+        uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.TOKEN }}
-          external_repository: temuller/astro-visualization
+          #external_repository: temuller/astro-visualization
           publish_dir: docs
           #   keep_files: true
           user_name: temuller
