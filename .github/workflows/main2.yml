@@ -31,7 +31,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.TOKEN }}
-          external_repository: temuller/astro-visualization
+          #external_repository: temuller/astro-visualization
           publish_dir: ./docs
           #keep_files: true
           user_name: temuller
