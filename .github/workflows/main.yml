@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Git checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       #- name: Update theme
         # (Optional)If you have the theme added as submodule, you can pull it and use the most updated version
@@ -33,9 +33,9 @@ jobs:
         with:
           personal_token: ${{ secrets.TOKEN }}
           external_repository: temuller/astro-visualization
-          # publish_dir: ./public
+          publish_dir: ./docs
           #   keep_files: true
           user_name: temuller
-          user_email: <t.e.muller-bravo@soton.ac.uk>
+          #user_email: <t.e.muller-bravo@soton.ac.uk>
           publish_branch: master
         #   cname: example.com
