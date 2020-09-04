@@ -1,0 +1,17 @@
+os: linux
+language: minimal
+addons:
+  snaps:
+    - name: hugo
+      channel: extended
+script:
+- hugo
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $TOKEN
+  keep_history: false
+  target_branch: checkpoint
+  local_dir: docs
+  on:
+    branch: checkpoint
