@@ -1,0 +1,29 @@
+baseURL = "http://example.org/"
+languageCode = "en-gb"
+title = "Astro-Visualization"
+
+[permalinks]
+  blog = "/:filename/"
+
+[params]
+  dateFormat = "Jan 2, 2006"
+  homeText = "Welcome to Astro-Visualization! In this website you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us!"
+
+
+# menus
+[menu]
+  [[menu.main]]
+    name = "Home"
+    pre = "home"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    name = "Blog"
+    pre = "edit"
+    url = "/blog/"
+    weight = 2
+
+
+[taxonomies]
+  tag = "tags"
+
