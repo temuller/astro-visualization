@@ -1,13 +1,14 @@
 # Astro-Visualization
 A repository for pretty astronomical plots
 
+This repository started as a hack project during [AstroHackWeek2020](http://astrohackweek.org/2020/)
 
 ___
 ## Contributing
 
 Do you have a pretty plot you would like to share with the rest of the astronomy community? Wonderful! We require the following:
 
-   * Your name (ideally as it appears on your publications) and affiliation (optional)
+   * Your name (ideally as it appears on your publications) and affiliation (optionals)
    * The link to the original plot (e.g., publication, website, etc. -- optional)
    * The title of the plot
    * The caption of the plot in Latex format, if any

@@ -48,7 +48,9 @@ Caption: Gaussian Process (GP) fit of the multi-colour light curves of SN 03D1au
 
 Author: Tomás E. Müller-Bravo  
 
-Affiliation: University of Southamtpon  
+Affiliation: University of Southampton  
+
+Original Image: [link](https://piscola.readthedocs.io/en/latest/examples/basic_example.html)
 
 
 ```python

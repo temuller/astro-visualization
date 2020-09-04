@@ -10,7 +10,7 @@ subtitle = ""
 
 Do you have a pretty plot you would like to share with the rest of the astronomy community? Wonderful! We require the following:
 
-   * Your name (ideally as it appears on your publications) and affiliation (optional)
+   * Your name (ideally as it appears on your publications) and affiliation (optionals)
    * The link to the original plot (e.g., publication, website, etc. -- optional)
    * The title of the plot
    * The caption of the plot in Latex format, if any
@@ -20,5 +20,5 @@ Do you have a pretty plot you would like to share with the rest of the astronomy
    * Compress all the files (metadata, image and source code) in a single file (zip, tar, etc.)
    * Send it to [us](https://github.com/temuller/astro-visualization/tree/test_branch#contributors)!
 
-You will find an example on our [Github repository](https://github.com/temuller/astro-visualization).
+You will find an example on how to contribute on our [Github repository](https://github.com/temuller/astro-visualization).
 
