@@ -19,7 +19,9 @@
       <guid>https://temuller.github.io/astro-visualization/gallery/example/</guid>
       <description>&lt;p&gt;Caption: Gaussian Process (GP) fit of the multi-colour light curves of SN 03D1au. A Matérn-5/2 kernel was used in this case. The solid lines show the mean of the GP fits while the shaded areas represent one standard deviation (1-$\sigma$). The vertical dashed black line marks the initial estimation of $B$-band peak.&lt;/p&gt;
 &lt;p&gt;Author: Tomás E. Müller-Bravo&lt;/p&gt;
-&lt;p&gt;Affiliation: University of Southamtpon&lt;/p&gt;
+&lt;p&gt;Affiliation: University of Southampton&lt;/p&gt;
+&lt;p&gt;Original Image: 
+&lt;a href=&#34;https://piscola.readthedocs.io/en/latest/examples/basic_example.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;link&lt;/a&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import matplotlib.pyplot as plt
 import numpy as np
 
