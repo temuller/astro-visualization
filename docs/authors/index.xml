@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Authors | Astro-Visualization</title>
-    <link>temuller.github.io/astro-visualization/authors/</link>
-      <atom:link href="temuller.github.io/astro-visualization/authors/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://temuller.github.io/astro-visualization/authors/</link>
+      <atom:link href="https://temuller.github.io/astro-visualization/authors/index.xml" rel="self" type="application/rss+xml" />
     <description>Authors</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-gb</language><copyright>© Tomás Müller `2020`</copyright>
     <image>
-      <url>/temuller.github.io/astro-visualization/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <url>https://temuller.github.io/astro-visualization/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
       <title>Authors</title>
-      <link>temuller.github.io/astro-visualization/authors/</link>
+      <link>https://temuller.github.io/astro-visualization/authors/</link>
     </image>
     
   </channel>

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Astro-Visualization</title>
-    <link>temuller.github.io/astro-visualization/</link>
-      <atom:link href="temuller.github.io/astro-visualization/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://temuller.github.io/astro-visualization/</link>
+      <atom:link href="https://temuller.github.io/astro-visualization/index.xml" rel="self" type="application/rss+xml" />
     <description>Astro-Visualization</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-gb</language><copyright>© Tomás Müller `2020`</copyright>
     <image>
-      <url>/temuller.github.io/astro-visualization/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <url>https://temuller.github.io/astro-visualization/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
       <title>Astro-Visualization</title>
-      <link>temuller.github.io/astro-visualization/</link>
+      <link>https://temuller.github.io/astro-visualization/</link>
     </image>
     
     <item>
       <title>Example</title>
-      <link>temuller.github.io/astro-visualization/gallery/example/</link>
+      <link>https://temuller.github.io/astro-visualization/gallery/example/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>temuller.github.io/astro-visualization/gallery/example/</guid>
+      <guid>https://temuller.github.io/astro-visualization/gallery/example/</guid>
       <description>&lt;p&gt;Caption: Gaussian Process (GP) fit of the multi-colour light curves of SN 03D1au. A Matérn-5/2 kernel was used in this case. The solid lines show the mean of the GP fits while the shaded areas represent one standard deviation (1-$\sigma$). The vertical dashed black line marks the initial estimation of $B$-band peak.&lt;/p&gt;
 &lt;p&gt;Author: Tomás E. Müller-Bravo&lt;/p&gt;
 &lt;p&gt;Affiliation: University of Southamtpon&lt;/p&gt;
