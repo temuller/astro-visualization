@@ -33,7 +33,8 @@ jobs:
         with:
           personal_token: ${{ secrets.TOKEN }}
           external_repository: temuller/astro-visualization
-          publish_dir: ./docs
+          #publish_dir: ./docs
+          path: './docs'
           #   keep_files: true
           user_name: temuller
           user_email: <t.e.muller-bravo@soton.ac.uk>
