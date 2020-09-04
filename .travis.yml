@@ -9,7 +9,7 @@ script:
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $TOKEN
+  github_token: "3ee78053ceef0624c747646024cb0c579d468a13"
   keep_history: false
   target_branch: checkpoint
   local_dir: docs
