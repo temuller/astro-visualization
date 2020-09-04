@@ -1,17 +1,16 @@
-os: linux
-language: minimal
-addons:
-  snaps:
-    - name: hugo
-      channel: extended
+dist: bionic
+sudo: true
+install:
+  - curl -LO https://github.com/gohugoio/hugo/releases/download/v0.74.2/hugo_extended_0.74.2_Linux-64bit.deb
+  - sudo dpkg -i hugo_extended_0.74.2_Linux-64bit.deb
 script:
-- hugo
+  - hugo
+  
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: "$GITHUB_TOKEN"
-  keep_history: false
-  target_branch: checkpoint
+  github_token: $GITHUB_TOKEN
+  keep_history: true
   local_dir: docs
   on:
     branch: checkpoint
