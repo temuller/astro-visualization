@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Galleries | Astro-Visualization</title>
+    <link>https://temuller.github.io/astro-visualization/gallery/</link>
+      <atom:link href="https://temuller.github.io/astro-visualization/gallery/index.xml" rel="self" type="application/rss+xml" />
+    <description>Galleries</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-gb</language><copyright>© Tomás Müller `2020`</copyright>
+    <image>
+      <url>https://temuller.github.io/astro-visualization/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Galleries</title>
+      <link>https://temuller.github.io/astro-visualization/gallery/</link>
+    </image>
+    
+    <item>
+      <title>Example</title>
+      <link>https://temuller.github.io/astro-visualization/gallery/example/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://temuller.github.io/astro-visualization/gallery/example/</guid>
+      <description>&lt;p&gt;Caption: Gaussian Process (GP) fit of the multi-colour light curves of SN 03D1au. A Matérn-5/2 kernel was used in this case. The solid lines show the mean of the GP fits while the shaded areas represent one standard deviation (1-$\sigma$). The vertical dashed black line marks the initial estimation of $B$-band peak.&lt;/p&gt;
+&lt;p&gt;Author: Tomás E. Müller-Bravo&lt;/p&gt;
+&lt;p&gt;Affiliation: University of Southampton&lt;/p&gt;
+&lt;p&gt;Original Image: 
+&lt;a href=&#34;https://piscola.readthedocs.io/en/latest/examples/basic_example.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;link&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import matplotlib.pyplot as plt
+import numpy as np
+
+# This code is extracted from PISCOLA (https://github.com/temuller/piscola, piscola/sn.py).
+# The function that makes this plot is inside a Class (a Type Ia Supernova object). This is a modified version of the actual code.
+
+#set colour palette
+new_palette = [plt.get_cmap(&#39;Dark2&#39;)(i) for i in np.arange(8)] + [plt.get_cmap(&#39;Set1&#39;)(i) for i in np.arange(8)]
+
+# extract the power of the scientific notation of the flux to normalize the values
+exp = np.round(np.log10(np.abs(self.data[self.bands[0]][&#39;flux&#39;]).mean()), 0)
+y_norm = 10**exp
+
+# set the plot limits
+plot_lim_vals = [[self.data[band][&#39;flux&#39;].min(), self.data[band][&#39;flux&#39;].max()] for band in self.bands]
+plot_lim_vals = np.ndarray.flatten(np.array(plot_lim_vals))/y_norm
+ymin_lim = np.r_[plot_lim_vals, 0.0].min()*0.9
+if ymin_lim &amp;lt; 0.0:
+    ymin_lim *= 1.1/0.9
+ymax_lim = plot_lim_vals.max()*1.05
+
+# beginning of the plot
+fig, ax = plt.subplots(figsize=(8, 6))
+
+# self.band is a list of observed bands.
+# self.data is a dictionary for light curve data with bands as keys and dictionaries as values with &#39;mjd&#39;, &#39;flux&#39; and &#39;std&#39; as keys.
+# self.lc_fits is the same as self.data, but for the light curve fits.
+for i, band in enumerate(self.bands):
+
+	# extract values for plotting	
+	time, flux, std = np.copy(self.lc_fits[band][&#39;mjd&#39;]), np.copy(self.lc_fits[band][&#39;flux&#39;]), np.copy(self.lc_fits[band][&#39;std&#39;])
+	data_time, data_flux, data_std = np.copy(self.data[band][&#39;mjd&#39;]), np.copy(self.data[band][&#39;flux&#39;]), np.copy(self.data[band][&#39;flux_err&#39;])
+
+	# normalize values
+	flux, std = flux/y_norm, std/y_norm
+	data_flux, data_std = data_flux/y_norm, data_std/y_norm
+
+	ax.errorbar(data_time, data_flux, data_std, fmt=&#39;o&#39;, mec=&#39;k&#39;, capsize=3, capthick=2, ms=8,
+		    elinewidth=3, color=new_palette[i],label=band)
+	ax.plot(time, flux,&#39;-&#39;, color=new_palette[i], lw=2, zorder=16)
+	ax.fill_between(time, flux-std, flux+std, alpha=0.5, color=new_palette[i])
+	# &#39;exp&#39; is used here to include it in the label for aesthetic purposes
+	ax.set_ylabel(r&#39;Flux [10$^{%.0f}$ erg cm$^{-2}$ s$^{-1}$ $\AA^{-1}$]&#39;%exp, fontsize=16, family=&#39;serif&#39;)
+
+# self.tmax is the estimated time of the rest-frame B-band peak luminosity
+ax.axvline(x=self.tmax, color=&#39;k&#39;, linestyle=&#39;--&#39;)
+ax.minorticks_on()
+ax.tick_params(which=&#39;major&#39;, length=6, width=1, direction=&#39;in&#39;, top=True, right=True, labelsize=16)
+ax.tick_params(which=&#39;minor&#39;, length=3, width=1, direction=&#39;in&#39;, top=True, right=True, labelsize=16)
+ax.set_xlabel(&#39;Modified Julian Date&#39;, fontsize=16, family=&#39;serif&#39;)
+# self.name is the name of the Supernova and self.z is the redshift
+ax.set_title(f&#39;{self.name}\nz = {self.z:.5}&#39;, fontsize=18, family=&#39;serif&#39;)
+ax.legend(fontsize=13, loc=&#39;upper right&#39;)
+ax.set_ylim(ymin_lim, ymax_lim)
+plt.show()
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Press the tag below to see more examples&lt;/em&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
