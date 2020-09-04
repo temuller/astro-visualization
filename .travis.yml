@@ -1,22 +1,17 @@
-# Install the apt prerequisites
+os: linux
+language: minimal
 addons:
-  apt:
-    packages:
-      - python-pygments
-
-# Clean and don't fail
-install:
-  - rm -rf docs || exit 0
-
-# Build the website
+  snaps:
+    - name: hugo
+      channel: extended
 script:
-  - ./binaries/hugo # --theme=ghoust
-
-# Deploy to GitHub pages
+- hugo
 deploy:
   provider: pages
   skip_cleanup: true
+  github_token: "$TOKEN"
+  keep_history: false
+  target_branch: checkpoint
   local_dir: docs
-  github_token: $TOKEN # Set in travis-ci.org dashboard
   on:
     branch: checkpoint
