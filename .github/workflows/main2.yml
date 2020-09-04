@@ -17,7 +17,7 @@ jobs:
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: "0.74.1"
-          extended: false
+          extended: true
 
       - name: Clean docs directory
         run: rm -rf docs
@@ -25,16 +25,16 @@ jobs:
       - name: Build
         # remove --minify tag if you do not need it
         # docs: https://gohugo.io/hugo-pipes/minification/
-        run: hugo -d docs
+        run: hugo
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.TOKEN }}
-          #external_repository: temuller/astro-visualization
+          external_repository: temuller/astro-visualization
           publish_dir: ./docs
-          #   keep_files: true
+          #keep_files: true
           user_name: temuller
           user_email: <t.e.muller-bravo@soton.ac.uk>
           publish_branch: checkpoint
-        #   cname: example.com
+          #cname: example.com
