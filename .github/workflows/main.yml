@@ -1,12 +1,11 @@
 name: Build & deploy
 on: 
   push:
-    branches:
-    - master
-  pull_request:
-    - master
+    branches: [ master ]
+  pull_request: [ master ]
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-18.04
     steps:
       - name: Git checkout
