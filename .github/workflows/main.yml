@@ -36,6 +36,6 @@ jobs:
           publish_dir: ./docs
           #   keep_files: true
           user_name: temuller
-          #user_email: <t.e.muller-bravo@soton.ac.uk>
+          user_email: <t.e.muller-bravo@soton.ac.uk>
           publish_branch: master
         #   cname: example.com
