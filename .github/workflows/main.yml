@@ -8,13 +8,13 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
-        with:
-          submodules: true  # Fetch Hugo themes
+#        with:
+#          submodules: true  # Fetch Hugo themes
 
-      - name: Setup hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: "0.71.2"
+#      - name: Setup hugo
+#        uses: peaceiris/actions-hugo@v2
+#        with:
+#          hugo-version: "0.74.1"
 
 #      - name: Build
 #        run: hugo --cleanDestinationDir
