@@ -16,8 +16,8 @@ jobs:
         with:
           hugo-version: "0.74.1"
 
-#      - name: Build
-#        run: hugo --cleanDestinationDir
+      - name: Build
+        run: hugo --cleanDestinationDir
 
 #      - name: Deploy
 #        uses: peaceiris/actions-gh-pages@v3
