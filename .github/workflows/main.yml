@@ -1,15 +1,19 @@
-name: CI
-on: push
+name: Automatic Deployment
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
 jobs:
   deploy:
     runs-on: ubuntu-18.04
     steps:
       - name: Git checkout
-        uses: actions/checkout@v2
-
-      #- name: Update theme
-        # (Optional)If you have the theme added as submodule, you can pull it and use the most updated version
-      #  run: git submodule update --init --recursive
+        uses: actions/checkout@master
 
       - name: Setup hugo
         uses: peaceiris/actions-hugo@v2
@@ -17,15 +21,13 @@ jobs:
           hugo-version: "0.71.2"
 
       - name: Build
-        # remove --minify tag if you do not need it
-        # docs: https://gohugo.io/hugo-pipes/minification/
-        run: hugo
+        run: hugo --cleanDestinationDir
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        with:
+        env:
           personal_token: ${{ secrets.TOKEN }}
-          external_repository: temuller/temuller.github.io/astro-visualization/
+          #external_repository: temuller/astro-visualization/
           publish_dir: ./docs
           #   keep_files: true
           user_name: temuller
