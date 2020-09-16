@@ -1,57 +1,35 @@
 +++
-# Example.
-#title = "Python for Intelligent Supernova-COsmology Light-curve Analysis"
-title = "Example"
+# Beginning of HEADER
+# This is a Markdown file!
+title = "PISCOLA Fits"
 
-# Date this page was created.
-#date = 2020-07-17T00:00:00
-
-# Project summary to display on homepage.
-summary = ""
-
-# Tags: can be used for filtering projects.
-# Example: `tags = ["royalties", "pcr"]`
+# Tags: can be used for filtering images/plots.
 tags = ["transient", "supernova"]
 
-# Optional external URL for project (replaces project detail page).
-external_link = ""
-
-# Slides (optional).
-#   Associate this project with Markdown slides.
-#   Simply enter your slide deck's filename without extension.
-#   E.g. `slides = "example-slides"` references 
-#   `content/slides/example-slides.md`.
-#   Otherwise, set `slides = ""`.
-#slides = "example-slides"
-
-# Links (optional).
-url_pdf = ""
-url_slides = ""
-url_video = ""
-url_code = ""
-
-# Custom links (optional).
-#   Uncomment line below to enable. For multiple links, use the form `[{...}, {...}, {...}]`.
-
+# to allow Latex symbols
 math = true
+
 # Featured image
 # To use, add an image named `featured.jpg/png` to your project's folder. 
 [image]
-  # Caption (optional)
+  # Caption (optional) DO NOT USE THIS CAPTION OPTION
   caption = ""
   
   # Focal point (optional)
   # Options: Smart, Center, TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight
   focal_point = "Smart"
+
+# End of HEADER
+# The following parameters are optional. Remember to leave two blank spaces at the end of each section (this introduces a new line in Markdown)
 +++
-Caption: Gaussian Process (GP) fit of the multi-colour light curves of SN 03D1au. A Matérn-5/2 kernel was used in this case. The solid lines show the mean of the GP fits while the shaded areas represent one standard deviation (1-$\sigma$). The vertical dashed black line marks the initial estimation of $B$-band peak.
+
+Caption: Gaussian Process (GP) fit of the multi-colour light curves of SN 03D1au. A Matérn-5/2 kernel was used in this case. The solid lines show the mean of the GP fits while the shaded areas represent one standard deviation (1-$\sigma$). The vertical dashed black line marks the initial estimation of $B$-band peak.  
 
 Author: Tomás E. Müller-Bravo  
 
 Affiliation: University of Southampton  
 
 Original Image: [link](https://piscola.readthedocs.io/en/latest/examples/basic_example.html)
-
 
 ```python
 import matplotlib.pyplot as plt
