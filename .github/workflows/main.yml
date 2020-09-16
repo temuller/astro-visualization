@@ -2,6 +2,10 @@ name: Automatic Deployment
 
 on: push
 
+
+env:
+  TOKEN: ${{ secrets.TOKEN }}
+
 jobs:
   deploy:
     runs-on: ubuntu-18.04
@@ -16,8 +20,11 @@ jobs:
         with:
           hugo-version: "0.74.1"
 
-      - name: Build
-        run: hugo
+      - name: Build and deploy
+        uses: victoriadrake/hugo-latest-cd@master
+
+#      - name: Build
+#        run: hugo
 
 #      - name: Deploy
 #        uses: peaceiris/actions-gh-pages@v3
