@@ -8,24 +8,26 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
+        with:
+          submodules: true  # Fetch Hugo themes
 
       - name: Setup hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: "0.71.2"
 
-      - name: Build
-        run: hugo --cleanDestinationDir
+#      - name: Build
+#        run: hugo --cleanDestinationDir
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.TOKEN }}
-          external_repository: temuller/astro-visualization/
-          publish_dir: ./docs
+#      - name: Deploy
+#        uses: peaceiris/actions-gh-pages@v3
+#        env:
+#          github_token: ${{ secrets.TOKEN }}
+          #TARGET_REPO: temuller/astro-visualization
+#          publish_dir: ./docs
           #   keep_files: true
-          user_name: temuller
-          user_email: <t.e.muller-bravo@soton.ac.uk>
-          publish_branch: master
+          #user_name: temuller
+          #user_email: <t.e.muller-bravo@soton.ac.uk>
+#          publish_branch: master
         #   cname: example.com
 
