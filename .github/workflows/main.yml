@@ -1,7 +1,12 @@
 name: Automatic Deployment
 
-on: push
-
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
 
 env:
   TOKEN: ${{ secrets.TOKEN }}
@@ -12,8 +17,6 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
-#        with:
-#          submodules: true  # Fetch Hugo themes
 
       - name: Setup hugo
         uses: peaceiris/actions-hugo@v2
@@ -22,19 +25,4 @@ jobs:
 
       - name: Build and deploy
         uses: victoriadrake/hugo-latest-cd@master
-
-#      - name: Build
-#        run: hugo
-
-#      - name: Deploy
-#        uses: peaceiris/actions-gh-pages@v3
-#        env:
-#          github_token: ${{ secrets.TOKEN }}
-          #TARGET_REPO: temuller/astro-visualization
-#          publish_dir: ./docs
-          #   keep_files: true
-          #user_name: temuller
-          #user_email: <t.e.muller-bravo@soton.ac.uk>
-#          publish_branch: master
-        #   cname: example.com
 

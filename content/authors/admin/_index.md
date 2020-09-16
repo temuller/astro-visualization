@@ -72,5 +72,3 @@ user_groups:
 ---
 
 Welcome to Astro-Visualization! This repository/website started as a hack project during [AstroHackWeek2020](http://astrohackweek.org/2020/). In here you can find several examples of pretty astronomical plots, and best of all, their source code! If you see a plot you like, just copy the source code and modify it to your convenience. Want to contribute with a pretty plot of your own? Get in touch with us! Feel free to share our website with the rest of the community as well!
-
-Testing deployment actions!
