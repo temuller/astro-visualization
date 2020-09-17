@@ -19,15 +19,23 @@
   </url>
   
   <url>
-    <loc>https://temuller.github.io/astro-visualization/gallery/example/</loc>
-  </url>
-  
-  <url>
     <loc>https://temuller.github.io/astro-visualization/gallery/</loc>
   </url>
   
   <url>
+    <loc>https://temuller.github.io/astro-visualization/gallery/piscola_fits/</loc>
+  </url>
+  
+  <url>
+    <loc>https://temuller.github.io/astro-visualization/gallery/piscola_flowchart/</loc>
+  </url>
+  
+  <url>
     <loc>https://temuller.github.io/astro-visualization/publication_types/</loc>
+  </url>
+  
+  <url>
+    <loc>https://temuller.github.io/astro-visualization/tag/python/</loc>
   </url>
   
   <url>

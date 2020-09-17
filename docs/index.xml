@@ -13,10 +13,10 @@
     </image>
     
     <item>
-      <title>Example</title>
-      <link>https://temuller.github.io/astro-visualization/gallery/example/</link>
+      <title>PISCOLA Fits</title>
+      <link>https://temuller.github.io/astro-visualization/gallery/piscola_fits/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://temuller.github.io/astro-visualization/gallery/example/</guid>
+      <guid>https://temuller.github.io/astro-visualization/gallery/piscola_fits/</guid>
       <description>&lt;p&gt;Caption: Gaussian Process (GP) fit of the multi-colour light curves of SN 03D1au. A Matérn-5/2 kernel was used in this case. The solid lines show the mean of the GP fits while the shaded areas represent one standard deviation (1-$\sigma$). The vertical dashed black line marks the initial estimation of $B$-band peak.&lt;/p&gt;
 &lt;p&gt;Author: Tomás E. Müller-Bravo&lt;/p&gt;
 &lt;p&gt;Affiliation: University of Southampton&lt;/p&gt;
@@ -77,6 +77,71 @@ ax.set_title(f&#39;{self.name}\nz = {self.z:.5}&#39;, fontsize=18, family=&#39;s
 ax.legend(fontsize=13, loc=&#39;upper right&#39;)
 ax.set_ylim(ymin_lim, ymax_lim)
 plt.show()
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Press the tag below to see more examples&lt;/em&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>PISCOLA Flowchart</title>
+      <link>https://temuller.github.io/astro-visualization/gallery/piscola_flowchart/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://temuller.github.io/astro-visualization/gallery/piscola_flowchart/</guid>
+      <description>&lt;p&gt;Caption: Flowchart of the main procedures in PISCOLA. Gaussian Process is used to fit the light curves of SNe Ia. Afterwards, an SED template is warped to match the observed SN colors, which is then corrected for redshift (K-correction) and Milky Way dust extinction. Finally, rest-frame light curves are obtained and the light-curve parameters are estimated.&lt;/p&gt;
+&lt;p&gt;Author: Tomás E. Müller-Bravo&lt;/p&gt;
+&lt;p&gt;Affiliation: University of Southampton&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# Here I used the diagrams package (https://github.com/mingrammer/diagrams). I created my own node (following
+# the same structures as the other ones) to add my own images to the diagram. Check the website 
+# (https://diagrams.mingrammer.com) for more examples.
+
+from diagrams import Diagram
+from diagrams.piscola.lightcurves import Lightcurves, Fits, SEDMatch, Kcorr, Dust, Bband, LcParams
+from diagrams import Cluster
+
+
+# Attributes
+graph_attr = {
+    &amp;quot;fontsize&amp;quot;: &amp;quot;40&amp;quot;,
+    &amp;quot;compund&amp;quot;: &amp;quot;True&amp;quot;,
+    &amp;quot;margin&amp;quot;: &amp;quot;-1.8&amp;quot;
+}
+
+node_attr = {
+    &amp;quot;fontsize&amp;quot;: &amp;quot;20&amp;quot;,
+    &amp;quot;fixedsize&amp;quot;: &amp;quot;True&amp;quot;,
+    &amp;quot;width&amp;quot;: &amp;quot;2&amp;quot;,
+    &amp;quot;height&amp;quot;: &amp;quot;2&amp;quot;,
+    &amp;quot;margin&amp;quot;: &amp;quot;0.5&amp;quot;,
+}
+
+cluster_attr = {
+    &amp;quot;fontsize&amp;quot;: &amp;quot;20&amp;quot;,
+}
+
+edge_attr = {
+    &amp;quot;minlen&amp;quot;: &amp;quot;1.0&amp;quot;,
+    &amp;quot;penwidth&amp;quot;:&amp;quot;3.0&amp;quot;,
+    &amp;quot;concentrate&amp;quot;: &amp;quot;true&amp;quot;,
+    &amp;quot;color&amp;quot;: &amp;quot;darkgreen&amp;quot;
+}
+
+
+with Diagram(&amp;quot;&amp;quot;, filename=&#39;piscola_flowchart&#39;, show=False, direction=&#39;LR&#39;, 
+             node_attr=node_attr, graph_attr=graph_attr, edge_attr=edge_attr, outformat=&#39;pdf&#39;) as diag:
+    net = Lightcurves(&amp;quot;\n\nSN Ia\nlight curves&amp;quot;) &amp;gt;&amp;gt; Fits(&amp;quot;\n\nGaussian Process\nfits&amp;quot;)
+    
+    net2 = net &amp;gt;&amp;gt; SEDMatch(&amp;quot;\n\nColor-matched\nSED template&amp;quot;)
+    
+    with Cluster(&amp;quot;Light-curve Correction&amp;quot;, graph_attr=cluster_attr):
+        kcor = Kcorr(&amp;quot;\n\nK-correction&amp;quot;)
+        lc_corr = [kcor, Dust(&amp;quot;\n\n\n\nMW Extinction\ncorrection&amp;quot;)] 
+        
+    lc_params = LcParams(&amp;quot;\n\nLight-curves\nparameters&amp;quot;) 
+    net2 &amp;gt;&amp;gt;  lc_corr &amp;gt;&amp;gt; Bband(&amp;quot;\n\nRest-frame\nlight curves&amp;quot;) &amp;gt;&amp;gt; lc_params #&amp;gt;&amp;gt; kcor
+    
+
+diag
 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;em&gt;Press the tag below to see more examples&lt;/em&gt;&lt;/p&gt;
