@@ -4,7 +4,7 @@
 title = "PISCOLA Fits"
 
 # Tags: can be used for filtering images/plots.
-tags = ["transient", "supernova"]
+tags = ["transient", "supernova", "python"]
 
 # to allow Latex symbols
 math = true
