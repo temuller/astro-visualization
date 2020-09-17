@@ -1,7 +1,7 @@
 # Astro-Visualization
 A repository for pretty astronomical plots
 
-This repository started as a hack project during [AstroHackWeek2020](http://astrohackweek.org/2020/)
+This repository started as a hack project during [AstroHackWeek2020](http://astrohackweek.org/2020/). If you make use of this website in your work, please add us to your Acknowledgements: "*This work has made used of the [Astro-Visualization](https://temuller.github.io/astro-visualization/) website*".
 
 ___
 ## Contributing
