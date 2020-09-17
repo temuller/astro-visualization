@@ -1,0 +1,27 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "A repository for pretty astronomical plots",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/temuller/astro-visualization.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/temuller/astro-visualization/issues"
+  },
+  "homepage": "https://github.com/temuller/astro-visualization#readme",
+  "dependencies": {
+    "autoprefixer": "^10.0.0",
+    "postcss-cli": "^7.1.2"
+  }
+}
