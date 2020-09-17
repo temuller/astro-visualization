@@ -6,7 +6,7 @@ This repository started as a hack project during [AstroHackWeek2020](http://astr
 ___
 ## Contributing
 
-Do you have a pretty plot you would like to share with the rest of the astronomy community? Wonderful! We require an image (in **png** or **jpg** format) of your beautiful plot/figure, a title, a caption (can contain Latex symbols) and the source code used to create it. The source code might need to be modified (e.g., adding comments, changing variable names) so anyone can understand it. Optionally, you can add your name, affiliation, link to the original plot/figure (e.g., publication, website). Suggestions are welcome!
+Do you have a pretty plot you would like to share with the rest of the astronomy community? Wonderful! We require an image (in **png** or **jpg** format) of your beautiful plot/figure, a title, a caption (can contain Latex symbols) and the source code used to create it. The source code might need to be modified (e.g., adding comments, changing variable names) so anyone can understand it. Optionally, you can add your name, affiliation, link to the original plot/figure (e.g., publication, website). Also, don't forget to add tags to your plot (in the `index.md` file). See the available tags under **Gallery** on the website (tags are written in lower case only). Suggestions are welcome!
 
 There are two main ways of contributing:
 
