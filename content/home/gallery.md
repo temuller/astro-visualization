@@ -46,6 +46,10 @@ subtitle = ""
    [[content.filter_button]]
      name = "Planet"
      tag = "planet"
+
+   [[content.filter_button]]
+     name = "Python"
+     tag = "python"
   
   # [[content.filter_button]]
   #   name = "Other"
