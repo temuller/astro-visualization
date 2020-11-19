@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/temuller/astro-visualization#readme",
   "dependencies": {
-    "autoprefixer": "^10.0.0",
+    "autoprefixer": "^10.0.2",
     "postcss-cli": "^7.1.2"
   },
   "devDependencies": {}
