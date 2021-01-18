@@ -5,12 +5,841 @@
     <link>https://temuller.github.io/astro-visualization/gallery/</link>
       <atom:link href="https://temuller.github.io/astro-visualization/gallery/index.xml" rel="self" type="application/rss+xml" />
     <description>Galleries</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-gb</language><copyright>© Tomás Müller `2020`</copyright>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-gb</language><copyright>© Tomás Müller `2021`</copyright>
     <image>
       <url>https://temuller.github.io/astro-visualization/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
       <title>Galleries</title>
       <link>https://temuller.github.io/astro-visualization/gallery/</link>
     </image>
+    
+    <item>
+      <title>A pie in the sky</title>
+      <link>https://temuller.github.io/astro-visualization/gallery/pie_in_the_sky/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://temuller.github.io/astro-visualization/gallery/pie_in_the_sky/</guid>
+      <description>&lt;p&gt;Caption: On large scales, the Universe resembles a giant web. But the appearance of this cosmic web is very different when seen through different observables. The movie shows some of these looks using a slice through the output from a numerical simulation. The quantities shown are, from the top slice in clockwise order: the matter (over)density, hydrogen neutral fraction, gas temperature, metallicity (= mass fraction of elements heavier than helium), and stellar mass (relative to the Sun mass).&lt;/p&gt;
+&lt;p&gt;Author: Enrico Garaldi&lt;/p&gt;
+&lt;p&gt;Affiliation: University of Bonn&lt;/p&gt;
+&lt;p&gt;Original Image: 
+&lt;a href=&#34;http://droettboom.com/jhepc2018-judge-packet/entry19.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;link&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# The data required to run this code can be found at https://drive.google.com/file/d/1jRb8SweYSydJYufjARoE4VCH0wm1FoQE/view
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
+from math import pi as PI
+from scipy.ndimage.interpolation import map_coordinates
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.cm import register_cmap
+
+__license__   = &amp;quot;GNU GPLv3 &amp;lt;https://www.gnu.org/licenses/gpl.txt&amp;gt;&amp;quot;
+__copyright__ = &amp;quot;20221 Enrico Garaldi&amp;quot;
+__author__    = &amp;quot;Enrico Garaldi &amp;lt;egaraldi@uni-bonn.de&amp;gt;&amp;quot;
+__version__   = &amp;quot;1.0&amp;quot;
+
+
+# create &amp;amp; register a new colormap
+_cm_name = &#39;BlackToYellow&#39;
+_cm_data = { &#39;red&#39;   : ((0.0, 0.0, 0.0), 
+                        (0.25, 0.0, 0.0),
+                        (1.0, 1.0, 1.0)),
+             &#39;green&#39; : ((0.0, 0.0, 0.0), 
+                        (0.25, 0.0, 0.0),
+                        (1.0, 1.0, 1.0)),
+             &#39;blue&#39;  : ((0.0, 0.0, 0.0),
+                        (0.25, 0.0, 0.0),
+                        (1.0, 0.0, 0.0))
+           }
+register_cmap(name=_cm_name, cmap=LinearSegmentedColormap(_cm_name,_cm_data))
+
+
+# create a function to create a pie plot
+def PiePlot(ax, *args, radius=0.8, initial_angle=0.0, cmaps=None, vmins=None, vmaxs=None, edge_deltaR=0, bcm_Rmin=0.85, 
+        bcm_Rmax=0.90, bcm_Rticklabels=0.95, bcm_Rlabel=1.0, bcm_Nsteps=100, bcm_ticks=5, bcm_ticklabels=None, 
+        bcm_buffer_angle_frac=0.1, bcm_labels=None, bcm_labels_fontsize=15, bcm_ticklabels_fontsize=10, bcm_labels_tilt=None, 
+        bcm_ticklabels_tilt=None, bcm_edge_deltaR=0, resample=None):
+    &amp;quot;&amp;quot;&amp;quot;
+    Plots a (collection of) field(s) in a circle with slices showing different
+    fields. It also produces circular colorbars.
+
+    Params:
+    ------
+    ax                      : matplotlib.Axes
+                              Axes to draw on
+    *args                   : (set of) squared 2D np.array
+                              fields that will be drawn in each slice (one per slice).
+                              The number of fields determines the number of slices.
+
+    radius                  : float in (0,1]
+                              radius of circular plot in unit of half field side
+    initial_angle           : float
+                              offset from 0 of the first slice in radians
+    cmaps                   : list of string
+                              For each field, name of the matplotlib colormap to use. 
+                              If None, a set of default colormaps is used.
+    vmins                   : list of floats
+                              For each field, vmin to use in the colormap.
+                              If None, vmin = min(field)
+    vmaxs                   : list of floats
+                              For each field, vmax to use in the colormap.
+                              If None, vmax = max(field)
+    edge_deltaR             : float in [0,1)
+                              thickness of plot edge (fraction of the radius)
+    bcm_Rmin                : float &amp;gt; 0
+                              inner radius of the colorbar
+    bcm_Rmax                : float &amp;gt; 0,1
+                              outer radius of the colorbar
+    bcm_Rticklabels         : float &amp;gt; 0
+                              radius of colorbar ticklabels
+    bcm_Rlabel              : float &amp;gt; 0
+                              radius of colorbar label
+    bcm_Nsteps              : int
+                              number of steps used to build the colorbar
+    bcm_ticks               : int OR list of ints OR list of list of floats
+                              if int, number of ticks in the colorbar,
+                              if list of int, number of ticks for each field
+                              if list of list of floats, tick values for each field
+    bcm_ticklabels          : list of list of strings
+                              ticklabels for each fields.
+                              If None, the numerical value is printed using the format &#39;%.2g&#39;
+    bcm_buffer_angle_frac   : float in [0,0.5)
+                              angular buffer between slice edge and colorbar in units
+                              of the slice angle
+    bcm_labels              : list of string
+                              colorbar labels for each field
+    bcm_labels_fontsize     : int
+                              font size for colormap label
+    bcm_ticklabels_fontsize : int
+                              font size for colormap ticklabels
+    bcm_labels_tilt         : float OR list of floats
+                              if float, impose a fixed tilt for the labels (in degrees)
+                              if list of floats, impose a fixed tilt for each field
+                              if None, the labels are tangential to the colorbar
+    bcm_ticklabels_tilt     : float OR list of floats
+                              if float, impose a fixed tilt for the ticklabels (in degrees)
+                              if list of floats, impose a fixed tilt for each field
+                              if None, the ticklabels are tangential to the colorbar
+    bcm_edge_deltaR         : float in [0,1)
+                              thickness of colorbar edge (fraction of the radius)
+    resample                : float
+                              resample the input field by the factor provided (i.e. if the input fields 
+                              have shape [Nx,Ny], they will be resampled to [resample*Nx,resample*Ny]
+                              if None, no resample will be performed
+    &amp;quot;&amp;quot;&amp;quot;
+
+    fields  = list(args)  #enable modifications to args
+    Nfields = len(args)
+
+    #check input
+    for field in fields:
+        if field.ndim != 2:
+            print(&amp;quot;ERROR: fields must be 2-dimensional!&amp;quot;)
+            return
+        nx,ny = field.shape
+        if nx != ny:
+            print(&amp;quot;ERROR: fields must be squared!&amp;quot;)
+            return
+
+    if (radius &amp;gt; 1) | (radius &amp;lt;= 0):
+        print(&amp;quot;ERROR: radius must be in (0,1]!&amp;quot;)
+        return
+
+    if (cmaps is None):
+        cmaps = sorted(m for m in plt.cm.datad if not m.endswith(&amp;quot;_r&amp;quot;))[0:Nfields]
+        
+
+    if (vmins is None):
+        vmins = []
+        for field in fields:
+            vmins.append( field.min() )
+
+    if (vmaxs is None):
+        vmaxs = []
+        for field in fields:
+            vmaxs.append( field.max() )
+    
+    if (bcm_Rmin &amp;lt;= 0):
+        print(&amp;quot;ERROR: bcm_Rmin must be &amp;gt; 0!&amp;quot;)
+        return
+
+    if (bcm_Rmax &amp;lt;= 0):
+        print(&amp;quot;ERROR: bcm_Rmax must be &amp;gt; 0!&amp;quot;)
+        return
+
+    if (bcm_Rticklabels &amp;lt;= 0):
+        print(&amp;quot;ERROR: bcm_Rticklabels must be &amp;gt; 0!&amp;quot;)
+        return
+
+    if (bcm_Rlabel &amp;lt;= 0):
+        print(&amp;quot;ERROR: bcm_Rlabel must be &amp;gt; 0!&amp;quot;)
+        return
+
+    if (bcm_buffer_angle_frac &amp;gt;= 0.5) | (bcm_buffer_angle_frac &amp;lt; 0):
+        print(&amp;quot;ERROR: bcm_buffer_angle_frac must be in [0,0.5)!&amp;quot;)
+        return
+
+    if (bcm_edge_deltaR &amp;gt;= 1) | (bcm_edge_deltaR &amp;lt; 0):
+        print(&amp;quot;ERROR: bcm_edge_deltaR must be in [0,1)!&amp;quot;)
+        return
+
+    if (bcm_buffer_angle_frac &amp;gt;= 0.5) | (bcm_buffer_angle_frac &amp;lt; 0):
+        print(&amp;quot;ERROR: bcm_buffer_angle_frac must be in [0,0.5)!&amp;quot;)
+        return
+
+    if (bcm_edge_deltaR &amp;gt;= 1) | (bcm_edge_deltaR &amp;lt; 0):
+        print(&amp;quot;ERROR: bcm_edge_deltaR must be in [0,1)!&amp;quot;)
+        return
+
+    if (bcm_labels is None):
+        bcm_labels = []
+        for i in range(Nfields):
+            bcm_labels.append( &amp;quot;field %i&amp;quot;%i )
+
+    bcm_ticks_in_input = False
+    if isinstance(bcm_ticks, int):
+        bcm_Nticks = [bcm_ticks]*Nfields
+    elif isinstance(bcm_ticks, list):
+        if isinstance(bcm_ticks[0], int):
+            bcm_Nticks = bcm_ticks
+        elif isinstance(bcm_ticks[0], list):
+            bcm_Nticks = [len(_Nticks) for _Nticks in bcm_ticks]
+            bcm_ticks_in_input = True
+        else:            
+            print(&amp;quot;ERROR: bcm_ticks can only be a int OR a list of int OR a list of list of int!&amp;quot;)
+            return
+    if (bcm_labels_tilt is not None):
+        if not isinstance(bcm_labels_tilt, list):
+            bcm_labels_tilt = [bcm_labels_tilt]*Nfields
+
+    if (bcm_ticklabels_tilt is not None):
+        if not isinstance(bcm_ticklabels_tilt, list):
+            bcm_ticklabels_tilt = [bcm_ticklabels_tilt]*Nfields
+
+    if (resample is not None) and (resample != 1):
+        px = ( np.arange(resample*nx) + 0.5 ) / resample 
+        py = ( np.arange(resample*ny) + 0.5 ) / resample 
+        newcoords = np.meshgrid(px,py)
+        for i in range(len(fields)):
+            fields[i] = map_coordinates(fields[i], newcoords, order=1, mode=&#39;nearest&#39;).T
+        nx,ny = fields[0].shape
+
+
+    slice_angle = 2*PI/Nfields
+    Lside = nx
+    xc = nx//2
+    yc = ny//2
+
+    xs,ys = np.mgrid[0:nx, 0:ny]
+    pixel_angle = np.arctan2(ys-yc, xs-xc) + PI  #[0, 2*PI]
+    pixel_angle = (pixel_angle - initial_angle)%(2*PI)
+    pixel_radius = np.sqrt( (xs-xc)**2 + (ys-yc)**2 )
+    
+
+    #plot edge
+    edgepixels = np.ma.masked_where( (pixel_radius &amp;gt;= (radius+bcm_edge_deltaR)*Lside//2),
+                                     np.ones_like(pixel_angle) )
+    ax.imshow(edgepixels, cmap=&#39;Greys_r&#39;, vmin=0, vmax=0)
+
+    for i,field in enumerate(fields):
+        #plot field
+        masked_field = np.ma.masked_where( (pixel_angle  &amp;lt;      i*slice_angle) | 
+                                           (pixel_angle  &amp;gt;  (i+1)*slice_angle) |  #there should be a &amp;gt;= here, but this sometimes produce empty pixels, so I removed it
+                                           (pixel_radius &amp;gt;  radius*Lside//2)    , field )
+        ax.imshow(masked_field, cmap=cmaps[i], vmin=vmins[i], vmax=vmaxs[i])
+
+        #bcm = bent colormap
+        th_min =       i*slice_angle + bcm_buffer_angle_frac*slice_angle
+        th_max =   (i+1)*slice_angle - bcm_buffer_angle_frac*slice_angle
+        th_mid = (i+0.5)*slice_angle
+
+        #colormap edge
+        bcm_edge_deltatheta = np.arcsin(bcm_edge_deltaR/bcm_Rmax)
+        edgepixels = np.ones_like(pixel_angle)
+    
+        edgepixels = np.ma.masked_where( (pixel_radius &amp;lt;  (bcm_Rmin-bcm_edge_deltaR)*Lside//2) | 
+                                         (pixel_radius &amp;gt;= (bcm_Rmax+bcm_edge_deltaR)*Lside//2) |
+                                         (pixel_angle  &amp;lt;   th_min-bcm_edge_deltatheta)         |
+                                         (pixel_angle  &amp;gt;=  th_max+bcm_edge_deltatheta)         ,
+                                         np.ones_like(pixel_angle) )
+
+        ax.imshow(edgepixels, cmap=&#39;Greys_r&#39;, vmin=0, vmax=0)
+
+
+        #colormap
+        vmin = vmins[i]
+        vmax = vmaxs[i]
+        pixels = 10*np.ones_like(pixel_angle)
+        for j in range(bcm_Nsteps):
+            step_min =     j/bcm_Nsteps
+            step_max = (j+1)/bcm_Nsteps
+            step_mid = j/(bcm_Nsteps-1)
+            w = (pixel_radius &amp;gt;= bcm_Rmin*Lside//2) &amp;amp; (pixel_radius &amp;lt; bcm_Rmax*Lside//2) &amp;amp; (pixel_angle &amp;gt;= th_min+step_min*(th_max-th_min)) &amp;amp;\
+                (pixel_angle &amp;lt; th_min+step_max*(th_max-th_min))
+            pixels[w] = step_mid
+        cm = np.ma.masked_greater(pixels, 1)
+        ax.imshow(cm, cmap=cmaps[i])
+
+
+        for j in range(bcm_Nticks[i]):
+            if bcm_ticks_in_input:
+                jtick = (bcm_ticks[i][j] - vmin) / (vmax - vmin)
+            else:
+                jtick = j/(bcm_Nticks[i]-1)
+            xtick = xc - bcm_Rticklabels*Lside//2*np.sin(th_min+jtick*(th_max-th_min)+initial_angle)
+            ytick = yc - bcm_Rticklabels*Lside//2*np.cos(th_min+jtick*(th_max-th_min)+initial_angle)
+            if (bcm_ticklabels_tilt is None):
+                tilt  = ( (th_min + jtick*(th_max-th_min) + initial_angle)*180/PI )%360
+                if (verticalalignment &amp;gt; 90) and (tilt &amp;lt;= 270): tilt += 180
+            else:
+                tilt = bcm_ticklabels_tilt[i]
+            if (bcm_ticklabels is None):
+                vtick = &amp;quot;%.2g&amp;quot;%(vmin + jtick*(vmax-vmin))
+            else:
+                vtick = bcm_ticklabels[i][j]
+            ax.text(xtick, ytick, vtick, verticalalignment=&#39;center&#39;, horizontalalignment=&#39;center&#39;, rotation=tilt, transform=ax.transData, fontsize=bcm_ticklabels_fontsize)
+        xlabel = xc - bcm_Rlabel*Lside//2*np.sin(th_min+0.5*(th_max-th_min)+initial_angle)
+        ylabel = yc - bcm_Rlabel*Lside//2*np.cos(th_min+0.5*(th_max-th_min)+initial_angle)
+        if (bcm_labels_tilt is None):
+            tilt   = ( (th_mid+initial_angle)*180/PI )%360
+            if (tilt &amp;gt; 90) and (tilt &amp;lt;= 270): tilt += 180
+        else:
+            tilt = bcm_labels_tilt[i]
+        ax.text(xlabel, ylabel, bcm_labels[i], verticalalignment=&#39;center&#39;, horizontalalignment=&#39;center&#39;, rotation=tilt, transform=ax.transData, fontsize=bcm_labels_fontsize)
+
+
+
+#load simulation
+print(&amp;quot;Loading simulation data...&amp;quot;)
+fields = np.load(&#39;fields_resampled.npz&#39;)
+gal_field = np.load(&#39;gal_field2.npy&#39;)
+
+print(&amp;quot; Plotting...&amp;quot;)
+fig = plt.figure(figsize=(10,10))
+gs = GridSpec(1,1)
+ax_img = fig.add_subplot( gs[0  ,0] )
+
+for i,theta_in in enumerate(np.arange(360,0,-0.5)):
+    PiePlot(ax_img, 
+               np.log10(fields[&#39;met&#39;]), fields[&#39;temp&#39;] /1e3, np.log10(fields[&#39;xHI&#39; ]), np.log10(fields[&#39;oden&#39;]), np.log10(gal_field), 
+               initial_angle=theta_in/180*PI,
+               cmaps=[&#39;terrain&#39;, &#39;YlOrRd&#39;, &#39;Spectral&#39;, &#39;viridis&#39;, &#39;BlackToYellow&#39;], 
+               vmins=[-23, 7.7, -5.1, -1.1, 0], 
+               vmaxs=[0, 20.1, -3.9, 2.1, 7],
+               radius=0.815,
+               edge_deltaR=0.005,
+               bcm_Nsteps=100, 
+               bcm_Rmin=0.83, 
+               bcm_Rmax=0.88, 
+               bcm_ticks=[[-20,-15,-10,-5], [8,12,16,20],[-5,-4.5,-4], [-1,0,1,2], [2,4,6]], 
+               bcm_buffer_angle_frac=0.015,
+               bcm_Rticklabels=0.94, 
+               bcm_Rlabel=1.05,
+               bcm_labels=[r&#39;$\log(Z/Z_{\odot})$&#39;, r&#39;$T \, [10^3 \, {\rm K}]$&#39;, r&#39;$\log(x_{\rm HI})$&#39;, r&#39;$\log(1+\delta_{\rm b})$&#39;, r&#39;$\log(M_*/M_\odot)$&#39;],
+               bcm_labels_fontsize=20, 
+               bcm_ticklabels_fontsize=17, 
+               bcm_labels_tilt=None, 
+               bcm_ticklabels_tilt=0,
+               bcm_edge_deltaR=0.005,
+               resample=None)
+
+    print(&amp;quot; Saving final output (%i)...&amp;quot;%i)
+    ax_img.set_axis_off()
+    fig.savefig(&#39;pie5_%i.png&#39;%i, pad_inches=-1, dpi=300)
+    ax_img.clear()
+plt.close(fig)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Press the tag below to see more examples&lt;/em&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Artistic galaxy tracks</title>
+      <link>https://temuller.github.io/astro-visualization/gallery/artistic_galaxy_tracks/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://temuller.github.io/astro-visualization/gallery/artistic_galaxy_tracks/</guid>
+      <description>&lt;p&gt;Caption: The dominant matter component of the Universe is a mysterious substance dubbed Dark Matter, which drives the formation of galaxies and cosmic structure thanks to its gravitational attraction, but does not interact with light. Every galaxy is embedded in a clump of Dark Matter called halo, approximately ten times larger than the galaxy itself. Some of these haloes were already in place billions of years ago, and since then did not increased their mass significantly. For these reasons, they are called &amp;lsquo;old&amp;rsquo;. Others, despite having the same mass today, are still actively growing (i.e. accreting new material). Hence, such haloes are dubbed &amp;lsquo;young&amp;rsquo;. Haloes in the Universe - and hence the galaxies they host - are organized in the so-called cosmic web, an ubiquitous network of long filament, intersecting in dense knots, embedded in vast empty regions that make up most of the volume. Filaments and knots host gaseous material as well, providing a prime way for matter to move across the Universe. More than ten years ago, it was realised that Dark Matter haloes of different age (but same mass) show very different clustering properties. Old ones are found much closer to each other than young haloes. The reason has become clearer in 2017, when it was shown that this effect is driven by the halo location in the cosmic web. Such cosmic environment changes the fate of haloes that are otherwise similar. Young haloes reside in knots of the cosmic web, where they dominate the local gravitational potential and, thanks to the constant flow of material from the nearby filaments, can accrete material for their entire life, until today. On the other hand, old haloes live in the filaments themselves, where the supply of material is suppressed by the competing gravitational attraction of other haloes in the filament, and therefore their growth is easily stopped early on. The plot shows the effect of cosmic environment on the gas (top panels) and stars (bottom panels) of haloes of the same mass. Each column shows a different simulated galaxy. The two on the left are hosted by old haloes (and therefore live in filaments of the cosmic web), while the two galaxies on the right reside in young haloes (located in knots of the cosmic web). All panels are centered on the galaxy position. In old haloes, the gas first falls vertically onto a squashed structure (the filament), and then - from there - moves toward the halo itself. This is characteristic of accretion from filaments, as the latter is dominating the gravitational potential. For young haloes, however, gas falls in from multiple directions, corresponding to the many filaments converging into the knot where the halo reside. Stars show a simiar pattern, but the trajectory are more clustered, as stars are only contained in smaller galaxies that merge with the halo. Some of these can be clearly seen as thick tracks.&lt;/p&gt;
+&lt;p&gt;Author: Enrico Garaldi&lt;/p&gt;
+&lt;p&gt;Affiliation: University of Bonn&lt;/p&gt;
+&lt;p&gt;Original Image: 
+&lt;a href=&#34;https://enricogaraldi.wixsite.com/egaraldi/outreach&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;link&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# This script requires additional data file to run. Contact me if you are interested in having access to those
+
+import matplotlib
+matplotlib.use(&#39;Agg&#39;)
+matplotlib.rcParams[&#39;agg.path.chunksize&#39;] = 10000
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.cm as cmaps
+from matplotlib.gridspec import GridSpec
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.patheffects as PathEffects
+
+
+Ncolors=10
+linewidth=1
+alpha=0.1
+
+Ntracks_to_plot = 2000  #-1 to use all
+
+fig = plt.figure(figsize=(30,15))
+fig.patch.set_facecolor(&#39;grey&#39;)
+gs = GridSpec(515, 1017)
+gs.update(left=0.0, right=1.0, bottom=0.0, top=1.0, wspace=0.0, hspace=0.1)
+axTLL = fig.add_subplot(gs[  5: 255,   5: 255], projection=&#39;3d&#39;)
+axTLC = fig.add_subplot(gs[  5: 255, 256: 506], projection=&#39;3d&#39;)
+axTRC = fig.add_subplot(gs[  5: 255, 511: 761], projection=&#39;3d&#39;)
+axTRR = fig.add_subplot(gs[  5: 255, 762:1012], projection=&#39;3d&#39;)
+axBLL = fig.add_subplot(gs[260: 510,   5: 255], projection=&#39;3d&#39;)
+axBLC = fig.add_subplot(gs[260: 510, 256: 506], projection=&#39;3d&#39;)
+axBRC = fig.add_subplot(gs[260: 510, 511: 761], projection=&#39;3d&#39;)
+axBRR = fig.add_subplot(gs[260: 510, 762:1012], projection=&#39;3d&#39;)
+
+
+for i in range(8):
+    if i==0:
+        pos = np.load(&amp;quot;tracks_gas_model1202.npy&amp;quot;)
+        ax = axTLL
+    elif i==1:
+        pos = np.load(&amp;quot;tracks_gas_model2111.npy&amp;quot;)
+        ax = axTLC
+    elif i==2:
+        pos = np.load(&amp;quot;tracks_gas_model1236.npy&amp;quot;)
+        ax = axTRC
+    elif i==3:
+        pos = np.load(&amp;quot;tracks_gas_model1249.npy&amp;quot;)
+        ax = axTRR
+    elif i==4:
+        pos = np.load(&amp;quot;tracks_stars_model1202.npy&amp;quot;)
+        ax = axBLL
+    elif i==5:
+        pos = np.load(&amp;quot;tracks_stars_model2111.npy&amp;quot;)
+        ax = axBLC
+    elif i==6:
+        pos = np.load(&amp;quot;tracks_stars_model1236.npy&amp;quot;)
+        ax = axBRC
+    elif i==7:
+        pos = np.load(&amp;quot;tracks_stars_model1249.npy&amp;quot;)
+        ax = axBRR
+
+    if i&amp;lt;4:
+        cmap_name = &#39;ocean&#39;
+        color = cmaps.get_cmap(cmap_name)( np.linspace(0.0, 1.0, Ncolors, endpoint=True) )
+    else:
+        cmap_name = &#39;gnuplot&#39;
+        color = cmaps.get_cmap(cmap_name)( np.linspace(0.0, 1.0, Ncolors, endpoint=True) )
+    
+    
+    
+    Nsnaps, Ntracks, _ = pos.shape
+
+    if((Ntracks_to_plot &amp;gt; 0) and (Ntracks_to_plot &amp;lt; Ntracks)):
+        idxt = np.unique(np.random.uniform(low=0, high=Ntracks, size=(Ntracks_to_plot)).astype(int))
+        pos = pos[:,idxt,:]
+        Ntracks = idxt.shape[0]
+
+    CoM = np.mean(pos, axis=1)
+
+    for j in range(Ncolors):
+        
+        xs, ys, zs = [], [], []
+        for i in range(Ntracks)[j::Ncolors]:
+            xs.extend( pos[:,i,0]-CoM[:,0] )
+            ys.extend( pos[:,i,1]-CoM[:,1] )
+            zs.extend( pos[:,i,2]-CoM[:,2] )
+            xs.append( np.nan )
+            ys.append( np.nan )
+            zs.append( np.nan )
+
+        ax.plot(xs, ys, zs=zs, color=color[j], linewidth=linewidth, alpha=alpha)
+
+    #get limits
+    xmin = np.min(pos[0,:,0]-CoM[0,0])
+    xmax = np.max(pos[0,:,0]-CoM[0,0])
+    ymin = np.min(pos[0,:,1]-CoM[0,1])
+    ymax = np.max(pos[0,:,1]-CoM[0,1])
+    zmin = np.min(pos[0,:,2]-CoM[0,2])
+    zmax = np.max(pos[0,:,2]-CoM[0,2])
+
+
+    ax.grid(False)
+    ax.set_axis_off()
+    ax.set_facecolor(&#39;k&#39;)
+
+    ax.view_init(elev=60, azim=0)
+
+    shrink_factor = 0.5
+    ax.set_xlim([shrink_factor*xmin, shrink_factor*xmax])
+    ax.set_ylim([shrink_factor*ymin, shrink_factor*ymax])
+    ax.set_zlim([shrink_factor*zmin, shrink_factor*zmax])
+
+#labels
+txt1 = fig.text(0.025, 0.75, &#39;GAS&#39;  , horizontalalignment=&#39;center&#39;, verticalalignment=&#39;center&#39;, fontsize=35, color=&#39;lightgrey&#39;, fontweight=&#39;bold&#39;, zorder=10, rotation=90)
+txt2 = fig.text(0.025, 0.25, &#39;STARS&#39;, horizontalalignment=&#39;center&#39;, verticalalignment=&#39;center&#39;, fontsize=35, color=&#39;lightgrey&#39;, fontweight=&#39;bold&#39;, zorder=10, rotation=90)
+
+txt3 = fig.text(0.25, 0.05, &#39;OLD&#39;  , horizontalalignment=&#39;center&#39;, verticalalignment=&#39;center&#39;, fontsize=35, color=&#39;lightgrey&#39;, fontweight=&#39;bold&#39;, zorder=10)
+txt4 = fig.text(0.75, 0.05, &#39;YOUNG&#39;, horizontalalignment=&#39;center&#39;, verticalalignment=&#39;center&#39;, fontsize=35, color=&#39;lightgrey&#39;, fontweight=&#39;bold&#39;, zorder=10)
+
+txt1.set_path_effects([PathEffects.withStroke(linewidth=15, foreground=&#39;k&#39;)])
+txt2.set_path_effects([PathEffects.withStroke(linewidth=15, foreground=&#39;k&#39;)])
+txt3.set_path_effects([PathEffects.withStroke(linewidth=15, foreground=&#39;k&#39;)])
+txt4.set_path_effects([PathEffects.withStroke(linewidth=15, foreground=&#39;k&#39;)])
+
+
+plt.tight_layout()
+fig.savefig(&#39;mosaic.png&#39;, dpi=300, bbox=&#39;tight&#39;)
+plt.cla()
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Press the tag below to see more examples&lt;/em&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Galactic infall</title>
+      <link>https://temuller.github.io/astro-visualization/gallery/galactic_infall/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://temuller.github.io/astro-visualization/gallery/galactic_infall/</guid>
+      <description>&lt;p&gt;Caption: The plots shows the trajectories followed by all stars that end up in a galaxy. The image is created from a zoom-in hydrodynamical simulation part of the ZOMG suite.&lt;/p&gt;
+&lt;p&gt;Author: Enrico Garaldi&lt;/p&gt;
+&lt;p&gt;Affiliation: University of Bonn&lt;/p&gt;
+&lt;p&gt;Original Image: 
+&lt;a href=&#34;https://enricogaraldi.wixsite.com/egaraldi/outreach&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;link&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# This script requires additional data file to run. Contact me if you are interested in having access to those
+
+import matplotlib
+matplotlib.use(&#39;Agg&#39;)
+matplotlib.rcParams[&#39;agg.path.chunksize&#39;] = 10000
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.cm as cmaps
+from mpl_toolkits.mplot3d import Axes3D
+import sys
+
+model = int(sys.argv[1])
+
+Ncolors=10
+linewidth=1
+alpha=0.1
+
+Ntracks_to_plot = 2000  #-1 to use all
+
+pos = np.load(&amp;quot;tracks_stars_model%i.npy&amp;quot;%model)
+
+Nsnaps, Ntracks, _ = pos.shape
+
+if((Ntracks_to_plot &amp;gt; 0) and (Ntracks_to_plot &amp;lt; Ntracks)):
+    idxt = np.unique(np.random.uniform(low=0, high=Ntracks, size=(Ntracks_to_plot)).astype(int))
+    pos = pos[:,idxt,:]
+    Ntracks = idxt.shape[0]
+
+CoM = np.mean(pos, axis=1)
+
+fig = plt.figure(figsize=(15.748,15.748))
+ax = fig.add_subplot(111, projection=&#39;3d&#39;)
+plt.subplots_adjust(left=0, right=1, bottom=0, top=1, wspace = 0.0, hspace = 0.0)
+
+cmaps_name = &#39;gnuplot2&#39;
+
+color = cmaps.get_cmap(cmap_name)( np.linspace(0.0, 1.0, Ncolors, endpoint=True) )
+
+for j in range(Ncolors):
+    
+    Nbeg = 0
+
+    xs, ys, zs = [], [], []
+    for i in range(Ntracks)[j::Ncolors]:
+        xs.extend( pos[Nbeg:-1,i,0]-CoM[Nbeg:-1,0] )
+        ys.extend( pos[Nbeg:-1,i,1]-CoM[Nbeg:-1,1] )
+        zs.extend( pos[Nbeg:-1,i,2]-CoM[Nbeg:-1,2] )
+        xs.append( np.nan )
+        ys.append( np.nan )
+        zs.append( np.nan )
+
+    ax.plot(xs, ys, zs=zs, color=color[j], linewidth=linewidth, alpha=alpha)
+
+#get limits
+xmin = np.min(pos[0,:,0]-CoM[0,0])
+xmax = np.max(pos[0,:,0]-CoM[0,0])
+ymin = np.min(pos[0,:,1]-CoM[0,1])
+ymax = np.max(pos[0,:,1]-CoM[0,1])
+zmin = np.min(pos[0,:,2]-CoM[0,2])
+zmax = np.max(pos[0,:,2]-CoM[0,2])
+
+
+ax.grid(False)
+ax.set_axis_off()
+ax.set_facecolor(&#39;k&#39;)
+
+ax.view_init(elev=60, azim=0)
+
+shrink_factor = 0.2
+ax.set_xlim([shrink_factor*xmin, shrink_factor*xmax])
+ax.set_ylim([shrink_factor*ymin, shrink_factor*ymax])
+ax.set_zlim([shrink_factor*zmin, shrink_factor*zmax])
+
+fig.savefig(&#39;single_model%i_%s.png&#39;%(model, cmap_name), dpi=300, bbox=&#39;tight&#39;)
+plt.cla()
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Press the tag below to see more examples&lt;/em&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Phase space disruption</title>
+      <link>https://temuller.github.io/astro-visualization/gallery/phase_space_disruption/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://temuller.github.io/astro-visualization/gallery/phase_space_disruption/</guid>
+      <description>&lt;p&gt;Caption: Galaxies grow over billions of years through a hierarchical process. Smaller objects merge and form larger ones, that then combine into even bigger ones. Most of these events involve galaxies with very unequal mass, and the fate of the smaller objects can be very different depending on their size and orbit. The movie shows the evolution of two such satellite galaxies orbiting similar (much bigger) hosts. The satellite in the left column has a mass 10 times smaller than the one on the right, and a 3 times larger impact parameter (i.e. its orbit starts more tangential). The top panels show the distance between each satellite galaxy and its host, as a function of redshift (a measure of time from the Big Bang, with today corresponding to redshift z=0). Since their orbit is a spiral, their distance from the host periodically changes. Additionally, they constantly loose energy because they move in a dense medium. This dynamical friction is more efficient for larger objects, and therefore the satellite on the right looses energy, and hence sinks at the center, more quickly. In addition, the pressure exherted on a satellite by its motion in a dense medium strips away its material. The mass reduction is stronger close to the host, where the density is higher. This effect can be seen in the central panels, that show the satellite mass as a function of redshift. The three curves refer to dark matter, gas, and stellar mass, and show that stripping is more efficient on the latter. The removed material becomes part of the host galaxy. To show this, in the bottom panels are shown all particles inside the satellite at the time it enters the hosts (z~2 for both columns), color-coded with redshift. The horizontal and vertical axes represent the position (distance) and velocity of the satellite galaxy with respect to the host. At regular intervals, marked by diamond symbols in the top panels, the particle position is impressed on the plot, to make evident their evolution. Finally, the gray shading in the background shows the distribution of all particles as density contours. Stripped particles end up overlapping with these contours, revealing they are well-mixed with the ambient medium. Despite being hosted by similar galaxies, and approaching them at similar times, the fate of the two satellites is very different. The one on the left survives until today, completes a single orbit and remains compact, thanks to its smaller mass and tangential orbit, that suppress the effects of dynamical friction and ambient pressure, respectively. The satellite on the left, however, is more affected by such effects because of its larger mass and more-radial trajectory. Its orbit decays quickly and brings it in region of higher density, enhancing the mass and energy loss. Consequently, the orbit is shrunk even more in a positive feedback loop that quickly destroys the satellite (when this happens, the lines in the top and middle panels stop).&lt;/p&gt;
+&lt;p&gt;Author: Enrico Garaldi&lt;/p&gt;
+&lt;p&gt;Affiliation: Max Planck Institute for Astrophysics&lt;/p&gt;
+&lt;p&gt;Original Image: 
+&lt;a href=&#34;https://enricogaraldi.wixsite.com/egaraldi/outreach&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;link&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# This script requires additional data file to run. Contact me if you are interested in having access to those
+
+import matplotlib
+matplotlib.use(&#39;Agg&#39;)
+import matplotlib.pyplot as p
+from matplotlib import gridspec
+import numpy
+import matplotlib.cm as cmaps
+
+
+#--- SETTINGS
+model1 = 1202
+subID1 = 4324
+model2 = 1236
+subID2 = 3782
+InitialSnap=80
+FinalSnap=682
+SnapStep=25
+sim_type=&#39;all&#39;
+particles_type=&#39;all&#39;
+outfile=&#39;frame&#39;
+cmap_name = &#39;CMRmap&#39;#&#39;gist_ncar_r&#39; #&#39;Paired&#39; #&#39;Set1_r&#39;
+alpha = 0.1
+dumpfile = &#39;dump&#39;
+
+
+
+
+#---SCRIPT
+
+def customColorbar(fig, ax=None, cax=None, cmap=&#39;jet&#39;, norm=p.Normalize, vmin=0, vmax=1, orientation=&#39;vertical&#39;):
+    sm = p.cm.ScalarMappable(cmap=p.get_cmap(cmap), norm=norm(vmin=vmin, vmax=vmax))
+    # fake up the array of the scalar mappable. Urgh...
+    sm._A = []
+    if ax is None and cax is None:
+        return fig.colorbar(sm, orientation=orientation)
+    elif ax is None:
+        return fig.colorbar(sm, cax=cax, orientation=orientation)
+    elif cax is None:
+        return fig.colorbar(sm, ax=ax, orientation=orientation)
+    else:
+        return fig.colorbar(sm, ax=ax, cax=cax, orientation=orientation)
+
+
+
+#plotting stuff
+fig = p.figure(figsize=(16,14))
+gs1 = gridspec.GridSpec(7,29)
+gs1.update(wspace=0.0, hspace=0.1)
+ax1  = fig.add_subplot(gs1[3:7, 0:14])
+ax2  = fig.add_subplot(gs1[3:7,14:28])
+axt1 = fig.add_subplot(gs1[0  , 0:14])
+axt2 = fig.add_subplot(gs1[0  ,14:28])
+axm1 = fig.add_subplot(gs1[1:3, 0:14])
+axm2 = fig.add_subplot(gs1[1:3,14:28])
+axt1z=axt1.twiny()
+axt2z=axt2.twiny()
+axr  = fig.add_subplot(gs1[3:7,28])
+
+NUM_COLORS = (FinalSnap-InitialSnap) + 1
+cm = p.get_cmap(cmap_name)
+colors = [cm(1.*i/NUM_COLORS) for i in range(NUM_COLORS)]
+
+boldSteps = list(range(InitialSnap,FinalSnap,SnapStep))
+boldStepsColor = [colors[s - InitialSnap] for s in boldSteps]
+    
+#load snap-redshift correspondence
+map_z = dict(dict(numpy.loadtxt(&#39;snap_redshift_map.txt&#39;,skiprows=1,usecols=[0,1])))
+map_t = dict(dict(numpy.loadtxt(&#39;snap_redshift_map.txt&#39;,skiprows=1,usecols=[0,2])))
+z_to_plot = [0, 0.5, 1, 2, 5]
+t_to_plot = [13.720, 8.628, 5.903, 3.316, 1.186]
+
+
+#contours data
+data = numpy.load(&#39;dump_host_model1202.npz&#39;)
+#remove Hubble flow
+Hubble_flow = 100.0 * data[&#39;dist_v&#39;] / 1e3 #kpc to Mpc
+cc1202, xx1202, yy1202 = numpy.histogram2d(data[&#39;dist_v&#39;], data[&#39;v_rad&#39;]+Hubble_flow, bins = 100)
+#cc1202, xx1202, yy1202 = numpy.histogram2d(data[&#39;dist_v&#39;], -data[&#39;v_rad&#39;], bins = 100)
+
+data = numpy.load(&#39;dump_host_model1236.npz&#39;)
+#remove Hubble flow
+Hubble_flow = 100.0 * data[&#39;dist_v&#39;] / 1e3 #kpc to Mpc
+cc1236, xx1236, yy1236 = numpy.histogram2d(data[&#39;dist_v&#39;], data[&#39;v_rad&#39;]+Hubble_flow, bins = 100)
+#cc1236, xx1236, yy1236 = numpy.histogram2d(data[&#39;dist_v&#39;], -data[&#39;v_rad&#39;], bins = 100)
+
+
+
+
+frame_counter = 0
+
+
+def plot_snap(this_snap, bs_alpha):
+
+    print(&#39;FRAME &#39;, this_snap)
+
+    for i,(model,subID) in enumerate(zip([model1,model2],[subID1,subID2])):
+        
+        if i==0:
+            axt = axt1
+            axtz=axt1z
+            axm = axm1
+            ax  = ax1
+            cc = cc1202
+            xx = xx1202
+            yy = yy1202
+        elif i==1:
+            axt = axt2
+            axtz=axt2z
+            axm = axm2
+            ax  = ax2
+            cc = cc1236
+            xx = xx1236
+            yy = yy1236
+
+
+        ax.contourf(xx[:-1], yy[:-1], numpy.log10(cc.T), 5, vmin=1,  cmap=p.cm.Greys, alpha = 0.5)
+
+        #load catalog
+        snaps,sh_ID,sh_cx,sh_cy,sh_cz,sh_vx,sh_vy,sh_vz,sh_npart,sh_Mvir,sh_Rvir,sh_Rmax,sh_r2,sh_Vmax,sh_Vesc,sh_sigmaV,\
+        sh_SpinB,sh_SpinP,sh_b, sh_c,sh_Cparam,sh_Mgas,sh_Mstar,sh_dist,h_ID,h_cx,h_cy,h_cz,h_vx,h_vy,h_vz,h_npart,h_Mvir,\
+        h_Rvir,h_Rmax,h_r2,h_Vmax,h_Vesc,h_sigmaV,h_SpinB,h_SpinP,h_b,h_c,h_Cparam,h_Mgas,h_Mstar \
+        = numpy.loadtxt(&#39;model%i_subhalo%i.dat&#39;%(model, subID),unpack=True)
+
+        #first, plot bold steps until now
+        for k,bstep in enumerate(boldSteps):
+            if bstep &amp;lt; this_snap:
+                data = numpy.load(dumpfile+&#39;_model%i_snap%i.npz&#39;%(model, bstep))
+                dist = data[&#39;dist_v&#39;]
+                v_rad = data[&#39;v_rad&#39;]
+                ax.plot(dist,v_rad, &#39;.&#39;, linewidth=0, markersize=0.5, alpha=bs_alpha, color=boldStepsColor[k])
+    
+    
+        #history in a top panel
+        z = numpy.array([map_z[s] for s in snaps])
+        t = numpy.array([map_t[s] for s in snaps])  #time in Gyr
+        w=(snaps &amp;lt;= this_snap)
+        axt.plot(t[w],numpy.sqrt((sh_cx[w]-h_cx[w])**2 + (sh_cy[w]-h_cy[w])**2 + (sh_cz[w]-h_cz[w])**2),&#39;C0-&#39;, linewidth=3)
+    
+        #masses in middle panel
+        axm.plot(t[w],sh_Mgas[w], &#39;C0-&#39;, label=r&#39;$M_{\rm{gas}}$&#39;, linewidth=3)
+        axm.plot(t[w],sh_Mvir[w], &#39;C2-&#39;, label=r&#39;$M_{\rm{DM}}$&#39; , linewidth=3)
+        axm.plot(t[w],sh_Mstar[w],&#39;C1-&#39;, label=r&#39;$M_{\rm{*}}$&#39;  , linewidth=3)
+
+        if this_snap &amp;gt; FinalSnap:
+            data = numpy.load(dumpfile+&#39;_model%i_snap%i.npz&#39;%(model, FinalSnap))
+            dist = data[&#39;dist_v&#39;]
+            v_rad = data[&#39;v_rad&#39;]
+            ax.plot(dist,v_rad, &#39;.&#39;, linewidth=0, markersize=0.5, color=colors[FinalSnap-InitialSnap])
+        else:
+            data = numpy.load(dumpfile+&#39;_model%i_snap%i.npz&#39;%(model, this_snap))
+            dist = data[&#39;dist_v&#39;]
+            v_rad = data[&#39;v_rad&#39;]
+            ax.plot(dist,v_rad, &#39;.&#39;, linewidth=0, markersize=0.5, color=colors[this_snap-InitialSnap])
+        
+        for k,bstep in enumerate(boldSteps):
+            if bstep &amp;lt; this_snap:
+                if bstep in snaps:
+                    axt.plot([map_t[bstep]], [sh_dist[snaps==bstep]], &#39;D&#39;, linewidth=1, markersize=8, color=boldStepsColor[k])
+                else:
+                    axt.plot([map_t[bstep]], [12], &#39;D&#39;, linewidth=1, markersize=8, color=boldStepsColor[k])
+
+        #colorbar
+        cb = customColorbar(fig, cax=axr, cmap=cmap_name, vmin=InitialSnap, vmax=FinalSnap, orientation=&#39;vertical&#39;)
+        #cb.ax.xaxis.set_ticks_position(&#39;top&#39;)
+        #ticks = numpy.linspace(InitialSnap,FinalSnap,5,endpoint=True)
+        ticks = [98, 155, 205, 283, 421, FinalSnap]  #z= 3,2,1.5, 1, 0.5, 0.0
+        cb.set_ticks(ticks)
+        cb.set_ticklabels([&amp;quot;3.0&amp;quot;, &amp;quot;2.0&amp;quot;, &amp;quot;1.5&amp;quot;, &amp;quot;1.0&amp;quot;, &amp;quot;0.5&amp;quot;, &amp;quot;0.0&amp;quot;])
+        cb.set_label(&#39;$z$&#39;, fontsize=30)
+
+
+        #cosmetics
+        axt.set_xticks([])
+        axt.set_xticklabels([])
+        axt.set_xlim([0,13.8])
+        axt.set_ylim([10,1000])
+        axt.set_yscale(&#39;log&#39;)
+        if i==0:
+            axt.set_ylabel(r&#39;$r$ [$h^{-1} \rm{kpc}$]&#39;, fontsize=30)
+            axt.set_yticks([10,100,1000])
+        elif i==1:
+            axt.set_yticks([])
+        axtz.set_xticks(t_to_plot)
+        axtz.set_xticklabels([&amp;quot;%.1f&amp;quot;%(zz) for zz in z_to_plot])
+        axtz.set_xlabel(&#39;$z$&#39;, fontsize=30)
+                
+                
+        axm.set_xticks([])
+        axm.set_xlim([0,13.8])
+        axm.set_ylim([5e4,9.9e9])
+        axm.set_yscale(&#39;symlog&#39;)
+        if i==0:
+            axm.set_ylabel(r&#39;$M$ [$h^{-1} \rm{M_\odot}$]&#39;,fontsize=30)
+            axm.legend(loc=&#39;upper left&#39;, fontsize=24, ncol=3, handlelength=1.4)
+        elif i==1:
+            axm.set_yticks([])
+         
+        #align labels
+        axt.yaxis.set_label_coords(-0.15, 0.5)
+        axm.yaxis.set_label_coords(-0.15, 0.5)
+        ax .yaxis.set_label_coords(-0.15, 0.5)
+
+        ax.hlines(0,0,1000,color=&#39;k&#39;)
+        ax.set_xlim([0,600])
+        ax.set_ylim([-450,450])
+        ax.set_xlabel(r&#39;$r$ [$h^{-1} \rm kpc$]&#39;,fontsize=30)
+        if i==0:
+            ax.set_ylabel(r&#39;$v_{\rm r}$ [$\rm km \, s^{-1}$]&#39;,fontsize=30)
+            ax.set_xticks([0, 100, 200, 300, 400, 500])
+        elif i==1:
+            ax.set_yticks([])
+            ax.set_xticks([0, 100, 200, 300, 400, 500, 600])
+
+        ax.tick_params(axis=&#39;both&#39;, labelsize=20)
+        axt.tick_params(axis=&#39;both&#39;, labelsize=20)
+        axtz.tick_params(axis=&#39;both&#39;, labelsize=20)
+        axm.tick_params(axis=&#39;both&#39;, labelsize=20)
+        cb.ax.tick_params(axis=&#39;both&#39;, labelsize=20)
+    
+    #cleanup
+    fig.savefig(outfile+&#39;_%i.png&#39;%(this_snap-InitialSnap), bbox=&#39;tight&#39;)
+    ax1 .cla()
+    ax2 .cla()
+    axm1.cla()
+    axm2.cla()
+    axt1.cla()
+    axt2.cla()
+
+
+
+for this_snap in range(InitialSnap, FinalSnap):
+    plot_snap(this_snap, alpha)
+
+
+#now ramp up the alpha
+alpha_ramp = numpy.concatenate([ alpha*numpy.ones(25), numpy.linspace(alpha,1,50), numpy.ones(75) ])
+for l,a in enumerate(alpha_ramp):
+    plot_snap(FinalSnap+l, a)
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Press the tag below to see more examples&lt;/em&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>PISCOLA Fits</title>

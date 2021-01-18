@@ -3,6 +3,14 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://temuller.github.io/astro-visualization/gallery/pie_in_the_sky/</loc>
+  </url>
+  
+  <url>
+    <loc>https://temuller.github.io/astro-visualization/gallery/artistic_galaxy_tracks/</loc>
+  </url>
+  
+  <url>
     <loc>https://temuller.github.io/astro-visualization/</loc>
   </url>
   
@@ -19,7 +27,23 @@
   </url>
   
   <url>
+    <loc>https://temuller.github.io/astro-visualization/tag/cosmology/</loc>
+  </url>
+  
+  <url>
+    <loc>https://temuller.github.io/astro-visualization/gallery/galactic_infall/</loc>
+  </url>
+  
+  <url>
+    <loc>https://temuller.github.io/astro-visualization/tag/galaxy/</loc>
+  </url>
+  
+  <url>
     <loc>https://temuller.github.io/astro-visualization/gallery/</loc>
+  </url>
+  
+  <url>
+    <loc>https://temuller.github.io/astro-visualization/gallery/phase_space_disruption/</loc>
   </url>
   
   <url>
@@ -36,6 +60,10 @@
   
   <url>
     <loc>https://temuller.github.io/astro-visualization/tag/python/</loc>
+  </url>
+  
+  <url>
+    <loc>https://temuller.github.io/astro-visualization/tag/simulations/</loc>
   </url>
   
   <url>
